@@ -1,7 +1,8 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import FleetSpecifics from './FleetSpecifics';
 import './fleetform.css'
-import { createFleetDatabase } from '../../utillis/Firebase';
+import { createFleetDatabase, db } from '../../utillis/Firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 
 function Fleetform() {
@@ -13,6 +14,8 @@ function Fleetform() {
   const [customerFleet, setCustomerFleet] = useState([]);
   const [currentUnitIndex, setCurrentUnitIndex] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [showCustomerCategory, setShowCustomerForCategory] = useState(null);
+  const [FleetsFromFirestore, setFleetsFromFirestore] = useState([]);
 
   const handleNewCustomerChange = (e) => {
     setNewCustomer(e.target.value);
@@ -68,6 +71,54 @@ function Fleetform() {
        setCustomerFleet([]);
        setSelectedCustomer('')
     }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'fleets'));
+        const fetchedFleet = [];
+        querySnapshot.forEach((doc) => {
+          fetchedFleet.push({ id: doc.id, ...doc.data() });
+        });
+        setFleetsFromFirestore(fetchedFleet);
+      } catch (error) {
+        console.error('Error fetching documents: ', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const ByCustomer = {};
+  FleetsFromFirestore.forEach((unit) => {
+    if (!ByCustomer[unit.customer]) {
+      ByCustomer[unit.customer] = [];
+    }
+    ByCustomer[unit.customer].push(unit);
+  });
+
+  const getCustomerProgress = (cust) => {
+    const totalTodos = ByCustomer[cust]?.length || 0;
+    const completedTodos = ByCustomer[cust]?.filter((unit) => unit.done).length || 0;
+
+    return totalTodos > 0 ? (completedTodos / totalTodos) * 100 : 0;
+  };
+
+  const toggleCustomerForCategory = (cust) => {
+    if (showCustomerCategory === cust) {
+      setShowCustomerForCategory(null);
+    } else {
+      setShowCustomerForCategory(cust);
+    }
+  };
+
+  const getCustomerFleetCount = (cust) => {
+    return ByCustomer[cust]?.length || 0;
+  };
+
+  const getCustomerCompletedCount = (cust) => {
+    return ByCustomer[cust]?.filter((unit) => unit.done).length || 0;
   };
 
   return (
@@ -149,6 +200,56 @@ function Fleetform() {
         </>
       )}
       <button className='submission-button' onClick={submitFleet}>submit</button>
+
+
+      <h1>See how you're other fleets are doing!</h1>
+
+<div className="category-cards">
+{Object.keys(ByCustomer).map((Fleetcustomer) => (
+  <div key={Fleetcustomer} className="category-card">
+    <div
+      onClick={() => toggleCustomerForCategory(Fleetcustomer)}
+      className={`category-header ${showCustomerCategory === Fleetcustomer ? 'active' : ''}`}
+    >
+      <h3>{Fleetcustomer} - {getCustomerCompletedCount(Fleetcustomer)}/{getCustomerFleetCount(Fleetcustomer)} Units</h3>
+      <div className="progress-bar">
+        <div
+          className="progress-bar-fill"
+          style={{ width: `${getCustomerProgress(Fleetcustomer)}%` }}
+        ></div>
+      </div>
+      <p>{getCustomerProgress(Fleetcustomer).toFixed(2)}% Complete</p>
+    </div>
+    {showCustomerCategory === Fleetcustomer && (
+      <ul className="fleet-list">
+        {ByCustomer[Fleetcustomer]
+        .sort((unitA, unitB) => {
+        const priorityOrder = { low: 3, medium: 2, high: 1 };
+        return priorityOrder[unitA.priority] - priorityOrder[unitB.priority];
+        }).map((unit) => (
+          <li key={unit.id} className={`unit-card priority-${unit.priority} ${unit.done ? 'done' : ''}`}>                   
+            <strong>Unit Number:</strong> {unit.UnitNumber} <strong>Priority:</strong>{unit.priority}
+            <ul>
+              {unit.TaskSpecifics &&
+                unit.TaskSpecifics.length > 0 &&
+                unit.TaskSpecifics.map((info, index) => (
+                  <li key={index}>
+                    <strong>Position:</strong> {info.position}, <strong>Specifics:</strong>{' '}
+                    {info.specifics}, <strong>Tread Depth:</strong> {info.treadDepth}/32
+                  </li>
+                ))}
+            </ul>
+            {unit.imageUrls &&
+                unit.imageUrls.map((imageUrl, index) => (
+                  <img key={index} src={imageUrl} alt={`Image ${index + 1}`} className='unit-image' />
+                ))}
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+))}
+</div>
 
       
     </div>
