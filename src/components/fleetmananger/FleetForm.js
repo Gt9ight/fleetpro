@@ -1,4 +1,7 @@
 import React, {useState} from 'react'
+import FleetSpecifics from './FleetSpecifics';
+import './fleetform.css'
+
 
 function Fleetform() {
   const [newCustomer, setNewCustomer] = useState('');
@@ -7,6 +10,8 @@ function Fleetform() {
   const [inputValue, setInputValue] = useState('');
   const [priority, setPriority] = useState('low')
   const [customerFleet, setCustomerFleet] = useState([]);
+  const [currentUnitIndex, setCurrentUnitIndex] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleNewCustomerChange = (e) => {
     setNewCustomer(e.target.value);
@@ -34,6 +39,30 @@ function Fleetform() {
       setInputValue('');
     }
   };
+
+  const handleDeleteUnitNumber = (index) => {
+    const updatedUnitInfo = customerFleet.filter((_, i) => i !== index);
+    setCustomerFleet(updatedUnitInfo);
+  };
+
+
+  const handleAddUnitInfo = ({ position, specifics, treadDepth }) => {
+    if (position.trim() !== '' || specifics.trim() !== '' || treadDepth.trim() !== '') {
+      const updatedUnitInfo = [...customerFleet];
+      const details = {
+        position: position.trim(),
+        specifics: specifics.trim(), 
+        treadDepth: treadDepth.trim(),
+      };
+      updatedUnitInfo[currentUnitIndex].TaskSpecifics.push(details);
+      setCustomerFleet(updatedUnitInfo);
+    }
+    setShowPopup(false);
+  };
+
+
+
+
   return (
     <div>
       <div className='current user'>
@@ -60,7 +89,7 @@ function Fleetform() {
         value={inputValue}
         onChange={handleInputChange}
         placeholder='unit number'
-        className='unitInput'
+        className='unit-input'
         />
         <select onChange={(e) => setPriority(e.target.value)} value={priority}>
           <option value="low">Low Priority</option>
@@ -69,6 +98,50 @@ function Fleetform() {
         </select>
         <button onClick={handleAddingUnitNumber} className='add-button'>Add</button>
       </div>
+
+
+      <ul className="unit-list">
+       
+       {customerFleet.map((unit, index) => {
+         if (selectedCustomer === 'All' || unit.customer === selectedCustomer) {
+           return (
+             <li key={index} className={`unit-card priority-${unit.priority}`}>
+               <strong>Unit Number:</strong>{unit.UnitNumber}
+               <button
+                 onClick={() => {
+                   setCurrentUnitIndex(index);
+                   setShowPopup(true);
+                 }}
+               >
+                 Add Specifics
+               </button>
+               <ul>
+               
+                 {unit.TaskSpecifics.map((details, subIndex) => (
+                   <li key={subIndex}>
+                     <strong>Position:</strong> {details.position}, <strong>Specifics:</strong> {details.specifics}, <strong>Tread Depth:</strong> {details.treadDepth}/32
+                   </li>
+                 ))}
+               </ul>
+               <button onClick={() => handleDeleteUnitNumber(index)}>Delete</button>
+             </li>
+             
+           );
+           
+         }
+         return null;
+       })}
+     </ul>
+
+     {showPopup && (
+        <>
+          <div className="overlay" onClick={() => setShowPopup(false)} />
+          <div className="specifics-popup">
+            <FleetSpecifics onClose={() => setShowPopup(false)} onSave={handleAddUnitInfo} />
+          </div>
+        </>
+      )}
+      <button className='submission-button'>submit</button>
 
       
     </div>
