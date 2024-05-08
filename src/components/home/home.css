@@ -1,0 +1,97 @@
+body {
+    background-color: white;
+    color: black;
+  }
+  
+  .menu-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .title {
+    color: black;
+    font-size: 36px;
+    opacity: 0;
+    animation: fadeInTitle 1s ease-in-out forwards;
+    animation-delay: 1.5s;
+  }
+  
+  .fleet-checkerbutton,
+  .technicianbutton {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: aliceblue;
+    margin: 10px;
+    width: 200px;
+    height: 60px;
+    font-size: 18px;
+    border-radius: 7px;
+    background-color: #007bff;
+    opacity: 0;
+    animation: fallIn 1s ease-in-out forwards;
+    animation-delay: 0.5s;
+  }
+  
+  .fleet-checkerbutton:hover,
+  .technicianbutton:hover {
+    background-color: rgb(28, 71, 162);
+    cursor: pointer;
+  }
+  
+  @keyframes fadeInTitle {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+  }
+  
+  @keyframes fallIn {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .menu-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin-top: auto;
+      margin-bottom: auto;
+  }
+  
+    .title {
+        font-size: 24px;
+        animation-delay: 0.5s;
+    }
+  
+    .fleet-checkerbutton,
+    .technicianbutton {
+        width: 150px;
+        height: 50px;
+        font-size: 16px;
+        animation-delay: 0.2s;
+    }
+  }
+  
+  .button-icon {
+    width: 48px;
+    height: auto;
+    margin-right: 8px;
+  }
+  

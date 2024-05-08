@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import FleetSpecifics from './FleetSpecifics';
 import './fleetform.css'
+import { createFleetDatabase } from '../../utillis/Firebase';
 
 
 function Fleetform() {
@@ -61,7 +62,13 @@ function Fleetform() {
   };
 
 
-
+  const submitFleet = () => {
+    if (customerFleet.length > 0) {
+      createFleetDatabase('fleets', customerFleet);
+       setCustomerFleet([]);
+       setSelectedCustomer('')
+    }
+  };
 
   return (
     <div>
@@ -141,7 +148,7 @@ function Fleetform() {
           </div>
         </>
       )}
-      <button className='submission-button'>submit</button>
+      <button className='submission-button' onClick={submitFleet}>submit</button>
 
       
     </div>
