@@ -179,22 +179,7 @@ const FleetList = () => {
                       >
                         Upload Image
                       </button>
-                      <button
-                        className='unit-button'
-                        onClick={() => {
-                          const fileInput = document.createElement('input');
-                          fileInput.type = 'file';
-                          fileInput.accept = 'image/*';
-                          fileInput.capture = 'camera'; 
-                          fileInput.onchange = (e) => {
-                            const file = e.target.files[0];
-                            uploadImages(unit.id, file);
-                          };
-                          fileInput.click();
-                        }}
-                      >
-                        Take Picture
-                      </button>
+
                   </li>
                 ))}
               </ul>
