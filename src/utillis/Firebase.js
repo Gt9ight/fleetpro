@@ -146,3 +146,10 @@ const firebaseConfig = {
 
    return await signInWithEmailAndPassword(auth, email, password)
   }
+
+
+
+
+
+
+
