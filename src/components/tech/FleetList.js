@@ -181,11 +181,13 @@ const FleetList = () => {
                         onClick={() => {
                           const fileInput = document.createElement('input');
                           fileInput.type = 'file';
+                          fileInput.capture = 'environment';
                           fileInput.multiple = true;
                           fileInput.onchange = (e) => {
-                            const files = Array.from(e.target.files);
+                            const newFiles = Array.from(e.target.files);
+                            const files = [...(unit.imageUrls || []), ...newFiles]; // Append new files to existing ones
                             uploadImages(unit.id, files);
-                          };
+                        };
                           fileInput.click();
                         }}
                       >
