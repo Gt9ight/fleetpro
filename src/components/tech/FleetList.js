@@ -51,32 +51,36 @@ const FleetList = () => {
 
   const uploadImages = async (UnitId, files) => {
     try {
-
- 
-      const imageUrls = await Promise.all(
-        files.map(async (file) => {
-          const storageRef = ref(storage, `${UnitId}/${file.name}`);
-          const downloadURL = await getDownloadURL(storageRef);
-          return downloadURL; // Return the download URL
-        })
-      );
-
- 
+      // Create an array to store the download URLs of the uploaded images
+      const downloadURLs = [];
+  
+      // Loop through each file and upload it to Firebase Storage
+      for (const file of files) {
+        const storageRef = ref(storage, `${UnitId}/${file.name}`);
+        // Upload the file to the storage reference
+        await uploadBytes(storageRef, file);
+        // Get the download URL for the uploaded file
+        const imageURL = await getDownloadURL(storageRef);
+        // Push the download URL to the array
+        downloadURLs.push(imageURL);
+      }
+  
+      // Update the Firestore document with the array of download URLs
       const fleetRef = doc(db, 'fleets', UnitId);
       await updateDoc(fleetRef, {
-        imageUrls: imageUrls,
+        imageUrls: downloadURLs,
       });
-
-
+  
+      // Update the local state with the new image URLs
       setFleetsFromFirestore(prevState => {
         return prevState.map(unit =>
-          unit.id === UnitId ? { ...unit, imageUrls: imageUrls } : unit
+          unit.id === UnitId ? { ...unit, imageUrls: downloadURLs } : unit
         );
       });
-
-      console.log('Image uploaded successfully');
+  
+      console.log('Images uploaded successfully');
     } catch (error) {
-      console.error('Error uploading image: ', error);
+      console.error('Error uploading images: ', error);
     }
   };
 
