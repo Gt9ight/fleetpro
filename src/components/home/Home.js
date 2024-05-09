@@ -26,13 +26,13 @@ const Home = () => {
             <h1 className="title">WELCOME TO YOUR FLEET MANAGER</h1>
             {!isMobile && <InfoCards />}
             <div className="fleet-checker">
-                <div className="fleet-checkerbutton" to='/fleetmanagersignin' >Fleet Checker</div>
+                <Link className="fleet-checkerbutton" to='/fleetform' >Fleet Checker</Link>
             </div>
             <div className="fleet-customer">
                 <div className="fleet-checkerbutton" to='/customersignin' >Customer</div>
             </div>
             <div className="technician">
-                <div className="technicianbutton" to='/techniciansignin'>Technician</div>
+                <Link className="technicianbutton" to='/fleetlist'>Technician</Link>
             </div>
         </div>
     )
