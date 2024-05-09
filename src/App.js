@@ -4,7 +4,7 @@ import FleetList from "./components/tech/FleetList";
 function App() {
   return (
     <div >
-      <Fleetform />
+      <FleetList />
     </div>
   );
 }

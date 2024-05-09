@@ -115,6 +115,16 @@ const FleetList = () => {
     return ByCustomer[cust]?.filter((unit) => unit.done).length || 0;
   };
 
+  const UnitImages = ({ imageUrls }) => {
+    return (
+      <div className="unit-images">
+        {imageUrls && imageUrls.map((imageUrl, index) => (
+          <img key={index} src={imageUrl} alt={`Image ${index + 1}`} className='unit-image'/>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div>
       <div className='current-user'>
@@ -155,9 +165,11 @@ const FleetList = () => {
                           <li key={index}>
                             <strong>Position:</strong> {info.position}, <strong>Specifics:</strong>{' '}
                             {info.specifics}, <strong>Tread Depth:</strong> {info.treadDepth}/32
+
                           </li>
                         ))}
                     </ul>
+                    <UnitImages imageUrls={unit.imageUrls}  />
                     <button
                       className={`unit-button ${unit.done ? 'completed' : ''}`}
                       onClick={() => handleDone(unit.id, !unit.done)}

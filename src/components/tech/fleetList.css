@@ -89,6 +89,16 @@ body{
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       
     }
+
+    .unit-image {
+        max-width: 100%; /* Ensure image does not exceed the width of the card */
+        max-height: 150px; /* Set a maximum height for the image */
+        display: block; /* Ensure image behaves as a block element */
+        margin: 10px auto; /* Center the image horizontally */
+        object-fit: contain; /* Maintain aspect ratio while fitting within the dimensions */
+        border-radius: 5px; /* Optionally, add some border radius for aesthetics */
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Optionally, add a subtle shadow effect */
+      }
   
     .unit-item.low {
       border-left: 5px solid #3498db;
