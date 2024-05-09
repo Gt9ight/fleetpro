@@ -56,8 +56,8 @@ const FleetList = () => {
       const imageUrls = await Promise.all(
         files.map(async (file) => {
           const storageRef = ref(storage, `${UnitId}/${file.name}`);
-          await uploadBytes(storageRef, file);
-          return getDownloadURL(storageRef);
+          const downloadURL = await getDownloadURL(storageRef);
+          return downloadURL; // Return the download URL
         })
       );
 
@@ -185,7 +185,7 @@ const FleetList = () => {
                           fileInput.multiple = true;
                           fileInput.onchange = (e) => {
                             const newFiles = Array.from(e.target.files);
-                            const files = [...(unit.imageUrls || []), ...newFiles]; // Append new files to existing ones
+                            const files = [...(unit.imageUrls || []), ...newFiles]; 
                             uploadImages(unit.id, files);
                         };
                           fileInput.click();
