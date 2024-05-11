@@ -51,40 +51,34 @@ const FleetList = () => {
 
   const uploadImages = async (UnitId, files) => {
     try {
-      // Create an array to store the download URLs of the uploaded images
-      const downloadURLs = [];
-  
-      // Loop through each file and upload it to Firebase Storage
-      for (const file of files) {
-        const storageRef = ref(storage, `${UnitId}/${file.name}`);
-        // Upload the file to the storage reference
-        await uploadBytes(storageRef, file);
-        // Get the download URL for the uploaded file
-        const imageURL = await getDownloadURL(storageRef);
-        // Push the download URL to the array
-        downloadURLs.push(imageURL);
-      }
-  
-      // Update the Firestore document with the array of download URLs
-      const fleetRef = doc(db, 'fleets', UnitId);
-      await updateDoc(fleetRef, {
-        imageUrls: downloadURLs,
-      });
-  
-      // Update the local state with the new image URLs
-      setFleetsFromFirestore(prevState => {
-        return prevState.map(unit =>
-          unit.id === UnitId ? { ...unit, imageUrls: downloadURLs } : unit
-        );
-      });
-  
-      console.log('Images uploaded successfully');
-    } catch (error) {
-      console.error('Error uploading images: ', error);
-    }
-  };
 
  
+      const imageUrls = await Promise.all(
+        files.map(async (file) => {
+          const storageRef = ref(storage, `${UnitId}/${file.name}`);
+          await uploadBytes(storageRef, file);
+          return getDownloadURL(storageRef);
+        })
+      );
+
+ 
+      const fleetRef = doc(db, 'fleets', UnitId);
+      await updateDoc(fleetRef, {
+        imageUrls: imageUrls,
+      });
+
+
+      setFleetsFromFirestore(prevState => {
+        return prevState.map(unit =>
+          unit.id === UnitId ? { ...unit, imageUrls: imageUrls } : unit
+        );
+      });
+
+      console.log('Image uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading image: ', error);
+    }
+  };
   const ByCustomer = {};
   FleetsFromFirestore.forEach((unit) => {
     if (!ByCustomer[unit.customer]) {
@@ -185,13 +179,11 @@ const FleetList = () => {
                         onClick={() => {
                           const fileInput = document.createElement('input');
                           fileInput.type = 'file';
-                          fileInput.capture = 'environment';
                           fileInput.multiple = true;
                           fileInput.onchange = (e) => {
-                            const newFiles = Array.from(e.target.files);
-                            const files = [...(unit.imageUrls || []), ...newFiles]; 
+                            const files = Array.from(e.target.files);
                             uploadImages(unit.id, files);
-                        };
+                          };
                           fileInput.click();
                         }}
                       >
