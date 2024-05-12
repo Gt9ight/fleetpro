@@ -76,13 +76,24 @@ body {
 }
 
 .unit-image {
-  max-width: 100%;
+  max-width: calc(50% - 20px);
+  margin-bottom: 20px;
   max-height: 150px;
   display: block;
   margin: 10px auto;
   object-fit: contain;
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.unit-images {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.unit-item.done {
+  background-color: #2ecc71;
 }
 
 .unit-item.low {
@@ -133,6 +144,8 @@ body {
   height: 40px;
   padding: 0 15px;
 }
+
+
 
 @media screen and (max-width: 768px) {
   .current-user {

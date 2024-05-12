@@ -91,13 +91,14 @@ h1 {
     position: relative;
   }
   .unit-image {
-    max-width: 100%; /* Ensure image does not exceed the width of the card */
-    max-height: 150px; /* Set a maximum height for the image */
-    display: block; /* Ensure image behaves as a block element */
-    margin: 10px auto; /* Center the image horizontally */
-    object-fit: contain; /* Maintain aspect ratio while fitting within the dimensions */
-    border-radius: 5px; /* Optionally, add some border radius for aesthetics */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Optionally, add a subtle shadow effect */
+    max-width: calc(50% - 20px);
+    margin-bottom: 20px;
+    max-height: 150px;
+    display: block;
+    margin: 10px auto;
+    object-fit: contain;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   }
   .unit-card.done {
     background-color: #4CAF50;

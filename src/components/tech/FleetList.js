@@ -114,7 +114,7 @@ const FleetList = () => {
   };
 
   const UnitImages = ({ imageUrls }) => {
-    return (
+    return ( 
       <div className="unit-images">
         {imageUrls && imageUrls.map((imageUrl, index) => (
           <img key={index} src={imageUrl} alt={`Image ${index + 1}`} className='unit-image'/>

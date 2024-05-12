@@ -121,6 +121,16 @@ function Fleetform() {
     return ByCustomer[cust]?.filter((unit) => unit.done).length || 0;
   };
 
+  const UnitImages = ({ imageUrls }) => {
+    return ( 
+      <div className="unit-images">
+        {imageUrls && imageUrls.map((imageUrl, index) => (
+          <img key={index} src={imageUrl} alt={`Image ${index + 1}`} className='unit-image'/>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div>
       <div className='current user'>
@@ -239,10 +249,7 @@ function Fleetform() {
                   </li>
                 ))}
             </ul>
-            {unit.imageUrls &&
-                unit.imageUrls.map((imageUrl, index) => (
-                  <img key={index} src={imageUrl} alt={`Image ${index + 1}`} className='unit-image' />
-                ))}
+            <UnitImages  imageUrls={unit.imageUrls}  />
           </li>
         ))}
       </ul>
