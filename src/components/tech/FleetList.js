@@ -167,7 +167,7 @@ const FleetList = () => {
                           </li>
                         ))}
                     </ul>
-                    <UnitImages imageUrls={unit.imageUrls}  />
+                    <UnitImages  imageUrls={unit.imageUrls}  />
                     <button
                       className={`unit-button ${unit.done ? 'completed' : ''}`}
                       onClick={() => handleDone(unit.id, !unit.done)}

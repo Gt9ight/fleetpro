@@ -29,7 +29,7 @@ const Home = () => {
                 <Link className="fleet-checkerbutton" to='/fleetform' >Fleet Checker</Link>
             </div>
             <div className="fleet-customer">
-                <div className="fleet-checkerbutton" to='/customersignin' >Customer</div>
+                <Link className="fleet-checkerbutton" to='/customer' >Customer</Link>
             </div>
             <div className="technician">
                 <Link className="technicianbutton" to='/fleetlist'>Technician</Link>
