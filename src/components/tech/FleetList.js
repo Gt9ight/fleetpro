@@ -127,7 +127,7 @@ const FleetList = () => {
     <div>
       <div className='current-user'>
         <p className='username'>Welcome, </p>        
-        <button className='logout'>Log Out</button>
+        {/* <button className='logout'>Log Out</button> */}
       </div>
       <h2 className='fleetList-title'>Fleets</h2>
       <div className="category-cards">

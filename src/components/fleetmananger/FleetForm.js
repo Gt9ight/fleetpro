@@ -131,11 +131,15 @@ function Fleetform() {
     );
   };
 
+
+
+  
+
   return (
     <div>
       <div className='current user'>
         <p className='username'>Welcome,</p>
-        <button>Log out</button>
+        {/* <button>Log out</button> */}
       </div>
       <h1 className='title'>FleetPro</h1>
 
