@@ -58,11 +58,14 @@ const Customerprogress = () => {
   };
 
 
-  const UnitImages = ({ imageUrls }) => {
-    return ( 
+  const UnitImages = ({ imageUrls, comments }) => {
+    return (
       <div className="unit-images">
         {imageUrls && imageUrls.map((imageUrl, index) => (
-          <img key={index} src={imageUrl} alt={`Image ${index + 1}`} className='unit-image'/>
+          <div key={index}>
+            <img src={imageUrl} alt={`Image ${index + 1}`} className='unit-image' />
+            {comments[index] && <p className='unit-comment'>Comment: {comments[index]}</p>}
+          </div>
         ))}
       </div>
     );
@@ -111,7 +114,7 @@ const Customerprogress = () => {
                           </li>
                         ))}
                     </ul>
-                    <UnitImages  imageUrls={unit.imageUrls}  />
+                    <UnitImages imageUrls={unit.imageUrls} comments={unit.comments} />
                   </li>
                 ))}
               </ul>
