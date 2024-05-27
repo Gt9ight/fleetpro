@@ -6,6 +6,8 @@ import './customerprogress.css'
 const Customerprogress = () => {
   const [FleetsFromFirestore, setFleetsFromFirestore] = useState([]);
   const [showCustomerCategory, setShowCustomerForCategory] =useState(null);
+  const [isImagePopupVisible, setImagePopupVisible] = useState(false);
+  const [selectedImageUrl, setSelectedImageUrl] = useState('');
 
 
   useEffect(() => {
@@ -58,18 +60,31 @@ const Customerprogress = () => {
   };
 
 
-  const UnitImages = ({ imageUrls, comments }) => {
-    return (
-      <div className="unit-images">
-        {imageUrls && imageUrls.map((imageUrl, index) => (
-          <div key={index}>
-            <img src={imageUrl} alt={`Image ${index + 1}`} className='unit-image' />
-            {comments[index] && <p className='unit-comment'>Comment: {comments[index]}</p>}
-          </div>
-        ))}
-      </div>
-    );
+  const handleImageClick = (imageUrl) => {
+    setSelectedImageUrl(imageUrl);
+    setImagePopupVisible(true);
   };
+
+  const closeImagePopup = () => {
+    setImagePopupVisible(false);
+    setSelectedImageUrl('');
+  };
+
+  const UnitImages = ({ imageUrls, comments }) => (
+    <div className="unit-images">
+      {imageUrls && imageUrls.map((imageUrl, index) => (
+        <div key={index}>
+          <img
+            src={imageUrl}
+            alt={`Image ${index + 1}`}
+            className='unit-image'
+            onClick={() => handleImageClick(imageUrl)}
+          />
+          {comments[index] && <p className='unit-comment'>Position: {comments[index]}</p>}
+        </div>
+      ))}
+    </div>
+  );
   return (
     <div>
       <div className='current-user'>
@@ -122,6 +137,15 @@ const Customerprogress = () => {
           </div>
         ))}
       </div>
+
+      {isImagePopupVisible && (
+        <>
+          <div className="overlay" onClick={closeImagePopup} />
+          <div className="image-popup">
+            <img src={selectedImageUrl} alt="Selected" />
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -19,6 +19,8 @@ function Fleetform() {
   const [FleetsFromFirestore, setFleetsFromFirestore] = useState([]);
   const [comment, setComment] = useState('');
   const [commentInputVisible, setCommentInputVisible] = useState(false);
+  const [isImagePopupVisible, setImagePopupVisible] = useState(false);
+  const [selectedImageUrl, setSelectedImageUrl] = useState('');
 
   const handleNewCustomerChange = (e) => {
     setNewCustomer(e.target.value);
@@ -180,11 +182,26 @@ function Fleetform() {
     return ByCustomer[cust]?.filter((unit) => unit.done).length || 0;
   };
 
+  const handleImageClick = (imageUrl) => {
+    setSelectedImageUrl(imageUrl);
+    setImagePopupVisible(true);
+  };
+
+  const closeImagePopup = () => {
+    setImagePopupVisible(false);
+    setSelectedImageUrl('');
+  };
+
   const UnitImages = ({ imageUrls, comments }) => (
     <div className="unit-images">
       {imageUrls && imageUrls.map((imageUrl, index) => (
         <div key={index}>
-          <img src={imageUrl} alt={`Image ${index + 1}`} className='unit-image' />
+          <img
+            src={imageUrl}
+            alt={`Image ${index + 1}`}
+            className='unit-image'
+            onClick={() => handleImageClick(imageUrl)}
+          />
           {comments[index] && <p className='unit-comment'>Position: {comments[index]}</p>}
         </div>
       ))}
@@ -289,6 +306,15 @@ function Fleetform() {
               placeholder="Enter your comment"
             />
             <button onClick={handleCommentSubmit}>Enter Position and Upload Images</button>
+          </div>
+        </>
+      )}
+
+{isImagePopupVisible && (
+        <>
+          <div className="overlay" onClick={closeImagePopup} />
+          <div className="image-popup">
+            <img src={selectedImageUrl} alt="Selected" />
           </div>
         </>
       )}
