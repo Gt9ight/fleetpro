@@ -3,6 +3,7 @@ import { db, storage } from '../../utillis/Firebase';
 import { getDocs, collection, updateDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import './fleetList.css';
+import imageCompression from 'browser-image-compression';
 
 const FleetList = () => {
   const [FleetsFromFirestore, setFleetsFromFirestore] = useState([]);
@@ -40,6 +41,26 @@ const FleetList = () => {
       setFleetsFromFirestore(updatedTask);
     } catch (error) {
       console.error('Error marking todo as done: ', error);
+    }
+  };
+
+  const compressAndUploadImages = async (UnitId, files, comment) => {
+    try {
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+
+      const compressedFiles = await Promise.all(
+        files.map(async (file) => {
+          return await imageCompression(file, options);
+        })
+      );
+
+      uploadImages(UnitId, compressedFiles, comment);
+    } catch (error) {
+      console.error('Error compressing images:', error);
     }
   };
 
@@ -91,7 +112,7 @@ const FleetList = () => {
     fileInput.multiple = true;
     fileInput.onchange = (e) => {
       const files = Array.from(e.target.files);
-      uploadImages(currentUnitId, files, comment);
+      compressAndUploadImages(currentUnitId, files, comment);
     };
     fileInput.click();
   };

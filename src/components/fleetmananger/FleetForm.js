@@ -4,6 +4,7 @@ import './fleetform.css'
 import { createFleetDatabase, db, storage } from '../../utillis/Firebase';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import imageCompression from 'browser-image-compression';
 
 
 function Fleetform() {
@@ -100,16 +101,37 @@ function Fleetform() {
     setCommentInputVisible(true);
   };
 
+
   const handleCommentSubmit = () => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.multiple = true;
     fileInput.onchange = (e) => {
       const files = Array.from(e.target.files);
-      uploadImages(currentUnitIndex, files, comment);
+      compressAndUploadImages(currentUnitIndex, files, comment);
     };
     fileInput.click();
     setCommentInputVisible(false);
+  };
+
+  const compressAndUploadImages = async (unitIndex, files, comment) => {
+    try {
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+
+      const compressedFiles = await Promise.all(
+        files.map(async (file) => {
+          return await imageCompression(file, options);
+        })
+      );
+
+      uploadImages(unitIndex, compressedFiles, comment);
+    } catch (error) {
+      console.error('Error compressing images:', error);
+    }
   };
 
   const uploadImages = async (unitIndex, files, comment) => {
