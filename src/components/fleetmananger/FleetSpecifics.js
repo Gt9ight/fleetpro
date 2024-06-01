@@ -6,6 +6,7 @@ const FleetSpecifics = ({ onClose, onSave }) => {
     const [position, setPosition] = useState('');
     const [specifics, setSpecifics] = useState('');
     const [treadDepth, setTreadDepth] = useState('');
+    const [neededTire, setNeededTire] = useState('');
   
     const handlePosition = (e) => {
       setPosition(e.target.value);
@@ -18,12 +19,16 @@ const FleetSpecifics = ({ onClose, onSave }) => {
     const handleTreadDepth = (e) => {
       setTreadDepth(e.target.value);
     };
+    const handleNeededTire = (e) => {
+      setNeededTire(e.target.value);
+    };
   
     const handleSaveSpecifics = () => {
-      onSave({ position, specifics, treadDepth }); 
+      onSave({ position, specifics, treadDepth, neededTire }); 
       setPosition('');
       setSpecifics('');
       setTreadDepth('');
+      setNeededTire('');
     };
   
     return (
@@ -49,6 +54,14 @@ const FleetSpecifics = ({ onClose, onSave }) => {
           type="number"
           value={treadDepth}
           onChange={handleTreadDepth}
+          placeholder="Tread Depth"
+        />
+
+        <label>Tire needed:</label>
+        <input
+          type="text"
+          value={neededTire}
+          onChange={handleNeededTire}
           placeholder="Tread Depth"
         />
   

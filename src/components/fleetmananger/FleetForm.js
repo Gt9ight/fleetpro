@@ -56,13 +56,14 @@ function Fleetform() {
   };
 
 
-  const handleAddUnitInfo = ({ position, specifics, treadDepth }) => {
-    if (position.trim() !== '' || specifics.trim() !== '' || treadDepth.trim() !== '') {
+  const handleAddUnitInfo = ({ position, specifics, treadDepth, neededTire }) => {
+    if (position.trim() !== '' || specifics.trim() !== '' || treadDepth.trim() !== '' || neededTire.trim() !== '') {
       const updatedUnitInfo = [...customerFleet];
       const details = {
         position: position.trim(),
         specifics: specifics.trim(), 
         treadDepth: treadDepth.trim(),
+        neededTire: neededTire.trim(),
       };
       updatedUnitInfo[currentUnitIndex].TaskSpecifics.push(details);
       setCustomerFleet(updatedUnitInfo);
@@ -291,7 +292,8 @@ function Fleetform() {
                
                  {unit.TaskSpecifics.map((details, subIndex) => (
                    <li key={subIndex}>
-                     <strong>Position:</strong> {details.position}, <strong>Specifics:</strong> {details.specifics}, <strong>Tread Depth:</strong> {details.treadDepth}/32
+                     <strong>Position:</strong> {details.position}, <strong>Specifics:</strong> {details.specifics}, <strong>Tread Depth:</strong> {details.treadDepth}/32<br></br>
+                     <p className='tireNeeded'><strong>Tire Needed:</strong> {details.neededTire}</p>
                    </li>
                  ))}
                </ul>
@@ -376,6 +378,7 @@ function Fleetform() {
                   <li key={index}>
                     <strong>Position:</strong> {info.position}, <strong>Specifics:</strong>{' '}
                     {info.specifics}, <strong>Tread Depth:</strong> {info.treadDepth}/32
+                    <p className='tireNeeded'><strong>Tire Needed:</strong> {info.neededTire}</p>
                   </li>
                 ))}
             </ul>

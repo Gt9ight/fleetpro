@@ -212,6 +212,7 @@ const FleetList = () => {
                             <li key={index}>
                               <strong>Position:</strong> {info.position}, <strong>Specifics:</strong>{' '}
                               {info.specifics}, <strong>Tread Depth:</strong> {info.treadDepth}/32
+                              <p className='tireNeeded'><strong>Tire Needed:</strong> {info.neededTire}</p>
                             </li>
                           ))}
                       </ul>
