@@ -5,6 +5,7 @@ import { createFleetDatabase, db, storage } from '../../utillis/Firebase';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import imageCompression from 'browser-image-compression';
+import { Oval } from 'react-loader-spinner';
 
 
 function Fleetform() {
@@ -22,6 +23,7 @@ function Fleetform() {
   const [commentInputVisible, setCommentInputVisible] = useState(false);
   const [isImagePopupVisible, setImagePopupVisible] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleNewCustomerChange = (e) => {
     setNewCustomer(e.target.value);
@@ -117,6 +119,7 @@ function Fleetform() {
 
   const compressAndUploadImages = async (unitIndex, files, comment) => {
     try {
+      setIsLoading(true);
       const options = {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
@@ -132,6 +135,8 @@ function Fleetform() {
       uploadImages(unitIndex, compressedFiles, comment);
     } catch (error) {
       console.error('Error compressing images:', error);
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -169,6 +174,8 @@ function Fleetform() {
       setComment('');
     } catch (error) {
       console.error('Error uploading image and comment: ', error);
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -341,6 +348,20 @@ function Fleetform() {
             <img src={selectedImageUrl} alt="Selected" />
           </div>
         </>
+      )}
+
+{isLoading && (
+        <div className="loading-overlay">
+          <Oval 
+          height="80" 
+          width="80" 
+          color="#4fa94d" 
+          ariaLabel="oval-loading" 
+          secondaryColor="#4fa94d" 
+          strokeWidth={2} 
+          strokeWidthSecondary={2} 
+          />
+        </div>
       )}
 
 

@@ -4,6 +4,7 @@ import { getDocs, collection, updateDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import './fleetList.css';
 import imageCompression from 'browser-image-compression';
+import { Oval } from 'react-loader-spinner';
 
 const FleetList = () => {
   const [FleetsFromFirestore, setFleetsFromFirestore] = useState([]);
@@ -13,6 +14,7 @@ const FleetList = () => {
   const [comment, setComment] = useState('');
   const [isImagePopupVisible, setImagePopupVisible] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,21 +48,24 @@ const FleetList = () => {
 
   const compressAndUploadImages = async (UnitId, files, comment) => {
     try {
+      setIsLoading(true);
       const options = {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
         useWebWorker: true,
       };
-
+  
       const compressedFiles = await Promise.all(
         files.map(async (file) => {
           return await imageCompression(file, options);
         })
       );
-
-      uploadImages(UnitId, compressedFiles, comment);
+  
+      await uploadImages(UnitId, compressedFiles, comment);
     } catch (error) {
       console.error('Error compressing images:', error);
+    } finally {
+      setIsLoading(false); 
     }
   };
 
@@ -98,6 +103,8 @@ const FleetList = () => {
       setComment('');
     } catch (error) {
       console.error('Error uploading image and comment: ', error);
+    } finally {
+      setIsLoading(false); 
     }
   };
 
@@ -258,6 +265,22 @@ const FleetList = () => {
             <img src={selectedImageUrl} alt="Selected" />
           </div>
         </>
+      )}
+            {isLoading && (
+        <div className="loading-overlay">
+          <Oval
+            height={100}
+            width={100}
+            color="#4fa94d"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+            ariaLabel='oval-loading'
+            secondaryColor="#4fa94d"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+          />
+        </div>
       )}
     </div>
   );
