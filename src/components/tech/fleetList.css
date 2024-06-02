@@ -108,14 +108,7 @@ body {
   border-left: 5px solid #e74c3c;
 }
 
-.todo-item.done {
-  text-decoration: line-through;
-  opacity: 0.7;
-}
 
-.todo-item input[type="checkbox"] {
-  margin-right: 10px;
-}
 
 .subtask-list {
   list-style: none;
