@@ -11,7 +11,7 @@ const FleetList = () => {
   const [showCustomerCategory, setShowCustomerForCategory] = useState(null);
   const [commentInputVisible, setCommentInputVisible] = useState(false);
   const [currentUnitId, setCurrentUnitId] = useState(null);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState({ comment1: '', comment2: '' });
   const [isImagePopupVisible, setImagePopupVisible] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +46,7 @@ const FleetList = () => {
     }
   };
 
-  const compressAndUploadImages = async (UnitId, files, comment) => {
+  const compressAndUploadImages = async (UnitId, files, comments) => {
     try {
       setIsLoading(true);
       const options = {
@@ -61,7 +61,7 @@ const FleetList = () => {
         })
       );
   
-      await uploadImages(UnitId, compressedFiles, comment);
+      await uploadImages(UnitId, compressedFiles, comments);
     } catch (error) {
       console.error('Error compressing images:', error);
     } finally {
@@ -69,7 +69,7 @@ const FleetList = () => {
     }
   };
 
-  const uploadImages = async (UnitId, files, comment) => {
+  const uploadImages = async (UnitId, files, comments) => {
     try {
       const existingUnit = FleetsFromFirestore.find(unit => unit.id === UnitId);
       const existingImageUrls = existingUnit?.imageUrls || [];
@@ -84,7 +84,7 @@ const FleetList = () => {
       );
 
       const updatedImageUrls = [...existingImageUrls, ...newImageUrls];
-      const updatedComments = [...existingComments, comment];
+      const updatedComments = [...existingComments, comments];
 
       const fleetRef = doc(db, 'fleets', UnitId);
       await updateDoc(fleetRef, {
@@ -98,11 +98,11 @@ const FleetList = () => {
         );
       });
 
-      console.log('Image and comment uploaded successfully');
+      console.log('Image and comments uploaded successfully');
       setCommentInputVisible(false);
-      setComment('');
+      setComment({ comment1: '', comment2: '' });
     } catch (error) {
-      console.error('Error uploading image and comment: ', error);
+      console.error('Error uploading image and comments: ', error);
     } finally {
       setIsLoading(false); 
     }
@@ -168,13 +168,16 @@ const FleetList = () => {
     <div className="unit-images">
       {imageUrls && imageUrls.map((imageUrl, index) => (
         <div key={index}>
+          <p className='unit-comment'>
+            Position: {comments[index]?.comment1 }<br />
+            Tread Depth: {comments[index]?.comment2 || 'NA'}/32
+          </p>
           <img
             src={imageUrl}
             alt={`Image ${index + 1}`}
             className='unit-image'
             onClick={() => handleImageClick(imageUrl)}
           />
-          {comments[index] && <p className='unit-comment'>Position: {comments[index]}</p>}
         </div>
       ))}
     </div>
@@ -233,7 +236,7 @@ const FleetList = () => {
                       <button
                         className='unit-button'
                         onClick={() => handleUploadClick(unit.id)}
-                      >
+                      > 
                         Upload Image
                       </button>
                     </li>
@@ -249,16 +252,22 @@ const FleetList = () => {
           <div className="comment-popup">
             <input
               type="text"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Enter your comment"
+              value={comment.comment1}
+              onChange={(e) => setComment({ ...comment, comment1: e.target.value })}
+              placeholder="Enter your first comment"
+            />
+            <input
+              type="text"
+              value={comment.comment2}
+              onChange={(e) => setComment({ ...comment, comment2: e.target.value })}
+              placeholder="Enter your second comment"
             />
             <button onClick={handleCommentSubmit}>Enter Position and Upload Images</button>
           </div>
         </>
       )}
 
-{isImagePopupVisible && (
+      {isImagePopupVisible && (
         <>
           <div className="overlay" onClick={closeImagePopup} />
           <div className="image-popup">
@@ -266,7 +275,7 @@ const FleetList = () => {
           </div>
         </>
       )}
-            {isLoading && (
+      {isLoading && (
         <div className="loading-overlay">
           <Oval
             height={100}

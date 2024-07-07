@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../utillis/Firebase';
 import { getDocs, collection } from 'firebase/firestore';
-import './customerprogress.css'
+import './customerprogress.css';
 
 const Customerprogress = () => {
   const [FleetsFromFirestore, setFleetsFromFirestore] = useState([]);
-  const [showCustomerCategory, setShowCustomerForCategory] =useState(null);
+  const [showCustomerCategory, setShowCustomerForCategory] = useState(null);
   const [isImagePopupVisible, setImagePopupVisible] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState('');
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +25,7 @@ const Customerprogress = () => {
 
     fetchData();
   }, []);
-  
+
   const ByCustomer = {};
   FleetsFromFirestore.forEach((unit) => {
     if (!ByCustomer[unit.customer]) {
@@ -35,11 +34,9 @@ const Customerprogress = () => {
     ByCustomer[unit.customer].push(unit);
   });
 
-  
   const getCustomerProgress = (cust) => {
     const totalTodos = ByCustomer[cust]?.length || 0;
     const completedTodos = ByCustomer[cust]?.filter((unit) => unit.done).length || 0;
-
     return totalTodos > 0 ? (completedTodos / totalTodos) * 100 : 0;
   };
 
@@ -59,7 +56,6 @@ const Customerprogress = () => {
     return ByCustomer[cust]?.filter((unit) => unit.done).length || 0;
   };
 
-
   const handleImageClick = (imageUrl) => {
     setSelectedImageUrl(imageUrl);
     setImagePopupVisible(true);
@@ -74,21 +70,25 @@ const Customerprogress = () => {
     <div className="unit-images">
       {imageUrls && imageUrls.map((imageUrl, index) => (
         <div key={index}>
+          <p className='unit-comment'>
+            Position: {comments[index]?.comment1}<br />
+            Tread Depth: {comments[index]?.comment2 || 'NA'}/32
+          </p>
           <img
             src={imageUrl}
             alt={`Image ${index + 1}`}
             className='unit-image'
             onClick={() => handleImageClick(imageUrl)}
           />
-          {comments[index] && <p className='unit-comment'>Position: {comments[index]}</p>}
         </div>
       ))}
     </div>
   );
+
   return (
     <div>
       <div className='current-user'>
-        <p className='username'>Welcome,</p>        
+        <p className='username'>Welcome,</p>
         {/* <button className='logout'>Log Out</button> */}
       </div>
       <h2 className='fleetList-title'>Fleets</h2>
@@ -110,29 +110,28 @@ const Customerprogress = () => {
               <p>{getCustomerProgress(Fleetcustomer).toFixed(2)}% Complete</p>
             </div>
             {showCustomerCategory === Fleetcustomer && (
-      <ul className="fleet-list">
-      {ByCustomer[Fleetcustomer]
-        .sort((unitA, unitB) => {
-         const priorityOrder = { low: 3, medium: 2, high: 1 };
-        return priorityOrder[unitA.priority] - priorityOrder[unitB.priority];
-     }).map((unit) => (
-      <li key={unit.id} className={`unit-item ${unit.done ? 'done' : ''} ${unit.priority}`}>                   
-                    <strong>Unit Number:</strong> {unit.UnitNumber} <strong>Priority:</strong>{unit.priority}
-
-                    <ul>
-                      {unit.TaskSpecifics &&
-                        unit.TaskSpecifics.length > 0 &&
-                        unit.TaskSpecifics.map((info, index) => (
-                          <li key={index}>
-                            <strong>Position:</strong> {info.position}, <strong>Specifics:</strong>{' '}
-                            {info.specifics}, <strong>Tread Depth:</strong> {info.treadDepth}/32
-                            <p className='tireNeeded'><strong>Tire Needed:</strong> {info.neededTire}</p>
-                          </li>
-                        ))}
-                    </ul>
-                    <UnitImages imageUrls={unit.imageUrls} comments={unit.comments} />
-                  </li>
-                ))}
+              <ul className="fleet-list">
+                {ByCustomer[Fleetcustomer]
+                  .sort((unitA, unitB) => {
+                    const priorityOrder = { low: 3, medium: 2, high: 1 };
+                    return priorityOrder[unitA.priority] - priorityOrder[unitB.priority];
+                  })
+                  .map((unit) => (
+                    <li key={unit.id} className={`unit-item ${unit.done ? 'done' : ''} ${unit.priority}`}>
+                      <strong>Unit Number:</strong> {unit.UnitNumber} <strong>Priority:</strong> {unit.priority}
+                      <ul>
+                        {unit.TaskSpecifics &&
+                          unit.TaskSpecifics.length > 0 &&
+                          unit.TaskSpecifics.map((info, index) => (
+                            <li key={index}>
+                              <strong>Position:</strong> {info.position}, <strong>Specifics:</strong> {info.specifics}, <strong>Tread Depth:</strong> {info.treadDepth}/32
+                              <p className='tireNeeded'><strong>Tire Needed:</strong> {info.neededTire}</p>
+                            </li>
+                          ))}
+                      </ul>
+                      <UnitImages imageUrls={unit.imageUrls} comments={unit.comments} />
+                    </li>
+                  ))}
               </ul>
             )}
           </div>

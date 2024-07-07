@@ -19,11 +19,12 @@ function Fleetform() {
   const [showPopup, setShowPopup] = useState(false);
   const [showCustomerCategory, setShowCustomerForCategory] = useState(null);
   const [FleetsFromFirestore, setFleetsFromFirestore] = useState([]);
-  const [comment, setComment] = useState('');
+  const [comment1, setComment1] = useState('');
   const [commentInputVisible, setCommentInputVisible] = useState(false);
   const [isImagePopupVisible, setImagePopupVisible] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [comment2, setComment2] = useState('');
 
   const handleNewCustomerChange = (e) => {
     setNewCustomer(e.target.value);
@@ -43,7 +44,14 @@ function Fleetform() {
 
   const handleAddingUnitNumber = () => {
     if (inputValue.trim() !== '') {
-      const newUnit = { UnitNumber: inputValue, customer: selectedCustomer, TaskSpecifics: [], priority };
+      const newUnit = {
+        UnitNumber: inputValue,
+        customer: selectedCustomer,
+        TaskSpecifics: [],
+        priority,
+        comments: [], // Initialize comments array
+        imageUrls: [] // Initialize imageUrls array
+      };
       setCustomerFleet([...customerFleet, newUnit].sort((a, b) => {
         const priorityOrder = { low: 3, medium: 2, high: 1 };
         return priorityOrder[a.priority] - priorityOrder[b.priority];
@@ -111,13 +119,14 @@ function Fleetform() {
     fileInput.multiple = true;
     fileInput.onchange = (e) => {
       const files = Array.from(e.target.files);
-      compressAndUploadImages(currentUnitIndex, files, comment);
+      compressAndUploadImages(currentUnitIndex, files, comment1, comment2);
     };
     fileInput.click();
     setCommentInputVisible(false);
   };
+  
 
-  const compressAndUploadImages = async (unitIndex, files, comment) => {
+  const compressAndUploadImages = async (unitIndex, files, comment1, comment2) => {
     try {
       setIsLoading(true);
       const options = {
@@ -125,27 +134,28 @@ function Fleetform() {
         maxWidthOrHeight: 1920,
         useWebWorker: true,
       };
-
+  
       const compressedFiles = await Promise.all(
         files.map(async (file) => {
           return await imageCompression(file, options);
         })
       );
-
-      uploadImages(unitIndex, compressedFiles, comment);
+  
+      uploadImages(unitIndex, compressedFiles, comment1, comment2); // Pass both comments
     } catch (error) {
       console.error('Error compressing images:', error);
     } finally {
       setIsLoading(false); // Stop loading
     }
   };
+  
 
-  const uploadImages = async (unitIndex, files, comment) => {
+  const uploadImages = async (unitIndex, files, comment1, comment2) => {
     try {
       const existingUnit = customerFleet[unitIndex];
       const existingImageUrls = existingUnit?.imageUrls || [];
       const existingComments = existingUnit?.comments || [];
-
+  
       const newImageUrls = await Promise.all(
         files.map(async (file) => {
           const storageRef = ref(storage, `${existingUnit.UnitNumber}/${file.name}`);
@@ -153,31 +163,33 @@ function Fleetform() {
           return getDownloadURL(storageRef);
         })
       );
-
+  
       const updatedImageUrls = [...existingImageUrls, ...newImageUrls];
-      const updatedComments = [...existingComments, comment];  
-
+      const updatedComments = [...existingComments, { comment1, comment2 }];
+  
       const updatedUnit = { ...existingUnit, imageUrls: updatedImageUrls, comments: updatedComments };
       const updatedCustomerFleet = [...customerFleet];
       updatedCustomerFleet[unitIndex] = updatedUnit;
       setCustomerFleet(updatedCustomerFleet);
-
+  
       // Update Firestore
       const fleetRef = doc(db, 'fleets', existingUnit.id);
       await updateDoc(fleetRef, {
         imageUrls: updatedImageUrls,
         comments: updatedComments,
       });
-
+  
       console.log('Image and comment uploaded successfully');
       setCommentInputVisible(false);
-      setComment('');
+      setComment1('');
+      setComment2('');
     } catch (error) {
       console.error('Error uploading image and comment: ', error);
     } finally {
       setIsLoading(false); // Stop loading
     }
   };
+  
 
   
 
@@ -222,21 +234,26 @@ function Fleetform() {
     setSelectedImageUrl('');
   };
 
-  const UnitImages = ({ imageUrls, comments }) => (
+  const UnitImages = ({ imageUrls, comments = [] }) => (
     <div className="unit-images">
       {imageUrls && imageUrls.map((imageUrl, index) => (
         <div key={index}>
+          <p className='unit-comment'>
+            Position: {comments[index]?.comment1}<br />
+            Tread Depth: {comments[index]?.comment2 || 'NA' }/32
+          </p>
           <img
             src={imageUrl}
             alt={`Image ${index + 1}`}
             className='unit-image'
             onClick={() => handleImageClick(imageUrl)}
           />
-          {comments[index] && <p className='unit-comment'>Position: {comments[index]}</p>}
         </div>
       ))}
     </div>
   );
+  
+
 
 
 
@@ -280,42 +297,37 @@ function Fleetform() {
 
 
       <ul className="unit-list">
-       
-       {customerFleet.map((unit, index) => {
-         if (selectedCustomer === 'All' || unit.customer === selectedCustomer) {
-           return (
-             <li key={index} className={`unit-card priority-${unit.priority}`}>
-               <strong>Unit Number:</strong>{unit.UnitNumber}
-               <button
-                 onClick={() => {
-                   setCurrentUnitIndex(index);
-                   setShowPopup(true);
-                 }}
-               >
-                 Add Specifics
-               </button>
-               <button onClick={() => handleUploadClick(index)} className='unit-button'>Upload Image</button>
-               <ul>
-               
-                 {unit.TaskSpecifics.map((details, subIndex) => (
-                   <li key={subIndex}>
-                     <strong>Position:</strong> {details.position}, <strong>Specifics:</strong> {details.specifics}, <strong>Tread Depth:</strong> {details.treadDepth}/32<br></br>
-                     <p className='tireNeeded'><strong>Tire Needed:</strong> {details.neededTire}</p>
-                   </li>
-                 ))}
-               </ul>
-               <UnitImages imageUrls={unit.imageUrls} comments={unit.comments} />
-               <button onClick={() => handleDeleteUnitNumber(index)}>Delete</button>
+  {customerFleet.map((unit, index) => {
+    if (selectedCustomer === 'All' || unit.customer === selectedCustomer) {
+      return (
+        <li key={index} className={`unit-card priority-${unit.priority}`}>
+          <strong>Unit Number:</strong>{unit.UnitNumber}
+          <button
+            onClick={() => {
+              setCurrentUnitIndex(index);
+              setShowPopup(true);
+            }}
+          >
+            Add Specifics
+          </button>
+          <button onClick={() => handleUploadClick(index)} className='unit-button'>Upload Image</button>
+          <ul>
+            {unit.TaskSpecifics.map((details, subIndex) => (
+              <li key={subIndex}>
+                <strong>Position:</strong> {details.position}, <strong>Specifics:</strong> {details.specifics}, <strong>Tread Depth:</strong> {details.treadDepth}/32<br></br>
+                <p className='tireNeeded'><strong>Tire Needed:</strong> {details.neededTire}</p>
+              </li>
+            ))}
+          </ul>
+          <UnitImages imageUrls={unit.imageUrls} comments={unit.comments} />
+          <button onClick={() => handleDeleteUnitNumber(index)}>Delete</button>
+        </li>
+      );
+    }
+    return null;
+  })}
+</ul>
 
-               
-             </li>
-             
-           );
-           
-         }
-         return null;
-       })}
-     </ul>
 
      {showPopup && (
         <>
@@ -332,10 +344,17 @@ function Fleetform() {
           <div className="comment-popup">
             <input
               type="text"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Enter your comment"
+              value={comment1}
+              onChange={(e) => setComment1(e.target.value)}
+              placeholder="Enter Position"
             />
+
+<input
+  type="number"
+  value={comment2}
+  onChange={(e) => setComment2(e.target.value)}
+  placeholder="Tread Depth"
+/>
             <button onClick={handleCommentSubmit}>Enter Position and Upload Images</button>
           </div>
         </>

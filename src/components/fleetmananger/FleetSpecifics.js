@@ -62,7 +62,7 @@ const FleetSpecifics = ({ onClose, onSave }) => {
           type="text"
           value={neededTire}
           onChange={handleNeededTire}
-          placeholder="Tread Depth"
+          placeholder="Enter Tire Needed"
         />
   
         <button onClick={handleSaveSpecifics}>Add Position</button>

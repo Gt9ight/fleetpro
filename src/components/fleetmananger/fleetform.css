@@ -293,3 +293,37 @@ h1 {
   z-index: 1000;
 }
 
+.unit-images {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.unit-images > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 1px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.unit-comment {
+  margin: 0;
+  padding: 5px;
+  font-size: 0.9em;
+  flex: 1;
+  text-align: left;
+}
+
+.unit-image {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  margin-left: auto; /* Align image to the right */
+}
