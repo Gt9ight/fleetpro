@@ -141,7 +141,7 @@ function Fleetform() {
         })
       );
   
-      uploadImages(unitIndex, compressedFiles, comment1, comment2); // Pass both comments
+      await uploadImages(unitIndex, compressedFiles, comment1, comment2); // Pass both comments
     } catch (error) {
       console.error('Error compressing images:', error);
     } finally {
@@ -164,32 +164,43 @@ function Fleetform() {
         })
       );
   
-      const updatedImageUrls = [...existingImageUrls, ...newImageUrls];
-      const updatedComments = [...existingComments, { comment1, comment2 }];
+      const commentIndex = existingComments.findIndex(
+        (comment) => comment.comment1 === comment1 && comment.comment2 === comment2
+      );
   
-      const updatedUnit = { ...existingUnit, imageUrls: updatedImageUrls, comments: updatedComments };
+      if (commentIndex !== -1) {
+        existingComments[commentIndex].imageUrls = [
+          ...(existingComments[commentIndex].imageUrls || []),
+          ...newImageUrls,
+        ];
+      } else {
+        existingComments.push({
+          comment1,
+          comment2,
+          imageUrls: newImageUrls,
+        });
+      }
+  
+      const updatedUnit = { ...existingUnit, comments: existingComments };
       const updatedCustomerFleet = [...customerFleet];
       updatedCustomerFleet[unitIndex] = updatedUnit;
       setCustomerFleet(updatedCustomerFleet);
   
-      // Update Firestore
       const fleetRef = doc(db, 'fleets', existingUnit.id);
       await updateDoc(fleetRef, {
-        imageUrls: updatedImageUrls,
-        comments: updatedComments,
+        comments: existingComments,
       });
   
-      console.log('Image and comment uploaded successfully');
+      console.log('Images and comments uploaded successfully');
       setCommentInputVisible(false);
       setComment1('');
       setComment2('');
     } catch (error) {
-      console.error('Error uploading image and comment: ', error);
+      console.error('Error uploading images and comments:', error);
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
     }
   };
-  
 
   
 
@@ -234,25 +245,33 @@ function Fleetform() {
     setSelectedImageUrl('');
   };
 
-  const UnitImages = ({ imageUrls, comments = [] }) => (
-    <div className="unit-images">
-      {imageUrls && imageUrls.map((imageUrl, index) => (
-        <div key={index}>
-          <p className='unit-comment'>
-            Position: {comments[index]?.comment1}<br />
-            Tread Depth: {comments[index]?.comment2 || 'NA' }/32
-          </p>
-          <img
-            src={imageUrl}
-            alt={`Image ${index + 1}`}
-            className='unit-image'
-            onClick={() => handleImageClick(imageUrl)}
-          />
-        </div>
-      ))}
-    </div>
-  );
+  const UnitImages = ({ imageUrls, comments = [] }) => {
+    // Create a mapping of comments to images
+    const imagesByComments = comments.reduce((acc, comment, index) => {
+      const commentText = `Position: ${comment.comment1}, Tread Depth: ${comment.comment2 || 'NA'}/32`;
+      acc[commentText] = comment.imageUrls || [];
+      return acc;
+    }, {});
   
+    return (
+      <div className="unit-images">
+        {Object.entries(imagesByComments).map(([comment, urls], index) => (
+          <div key={index}>
+            <p className="unit-comment">{comment}</p>
+            {urls.map((url, idx) => (
+              <img
+                key={idx}
+                src={url}
+                alt={`Image ${idx + 1}`}
+                className="unit-image"
+                onClick={() => handleImageClick(url)}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
 
 
@@ -296,7 +315,7 @@ function Fleetform() {
       </div>
 
 
-      <ul className="unit-list">
+<ul className="unit-list">
   {customerFleet.map((unit, index) => {
     if (selectedCustomer === 'All' || unit.customer === selectedCustomer) {
       return (

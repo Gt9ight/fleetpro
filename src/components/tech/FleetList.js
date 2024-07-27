@@ -4,6 +4,7 @@ import { getDocs, collection, updateDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import './fleetList.css';
 import imageCompression from 'browser-image-compression';
+import { useSwipeable } from 'react-swipeable';
 import { Oval } from 'react-loader-spinner';
 
 const FleetList = () => {
@@ -11,7 +12,8 @@ const FleetList = () => {
   const [showCustomerCategory, setShowCustomerForCategory] = useState(null);
   const [commentInputVisible, setCommentInputVisible] = useState(false);
   const [currentUnitId, setCurrentUnitId] = useState(null);
-  const [comment, setComment] = useState({ comment1: '', comment2: '' });
+  const [comment1, setComment1] = useState('');
+  const [comment2, setComment2] = useState('');
   const [isImagePopupVisible, setImagePopupVisible] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +48,7 @@ const FleetList = () => {
     }
   };
 
-  const compressAndUploadImages = async (UnitId, files, comments) => {
+  const compressAndUploadImages = async (UnitId, files, comment1, comment2, markAsComplete) => {
     try {
       setIsLoading(true);
       const options = {
@@ -61,18 +63,17 @@ const FleetList = () => {
         })
       );
   
-      await uploadImages(UnitId, compressedFiles, comments);
+      await uploadImages(UnitId, compressedFiles, comment1, comment2, markAsComplete);
     } catch (error) {
       console.error('Error compressing images:', error);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
-  const uploadImages = async (UnitId, files, comments) => {
+  const uploadImages = async (UnitId, files, comment1, comment2, markAsComplete) => {
     try {
       const existingUnit = FleetsFromFirestore.find(unit => unit.id === UnitId);
-      const existingImageUrls = existingUnit?.imageUrls || [];
       const existingComments = existingUnit?.comments || [];
 
       const newImageUrls = await Promise.all(
@@ -83,28 +84,43 @@ const FleetList = () => {
         })
       );
 
-      const updatedImageUrls = [...existingImageUrls, ...newImageUrls];
-      const updatedComments = [...existingComments, comments];
+      const commentIndex = existingComments.findIndex(
+        (comment) => comment.comment1 === comment1 && comment.comment2 === comment2
+      );
+
+      if (commentIndex !== -1) {
+        existingComments[commentIndex].imageUrls = [
+          ...(existingComments[commentIndex].imageUrls || []),
+          ...newImageUrls,
+        ];
+      } else {
+        existingComments.push({
+          comment1,
+          comment2,
+          imageUrls: newImageUrls,
+        });
+      }
+
+      const updatedUnit = { ...existingUnit, comments: existingComments };
+      const updatedCustomerFleet = [...FleetsFromFirestore];
+      const unitIndex = updatedCustomerFleet.findIndex(unit => unit.id === UnitId);
+      updatedCustomerFleet[unitIndex] = updatedUnit;
+      setFleetsFromFirestore(updatedCustomerFleet);
 
       const fleetRef = doc(db, 'fleets', UnitId);
       await updateDoc(fleetRef, {
-        imageUrls: updatedImageUrls,
-        comments: updatedComments,
+        comments: existingComments,
+        done: markAsComplete,
       });
 
-      setFleetsFromFirestore(prevState => {
-        return prevState.map(unit =>
-          unit.id === UnitId ? { ...unit, imageUrls: updatedImageUrls, comments: updatedComments } : unit
-        );
-      });
-
-      console.log('Image and comments uploaded successfully');
+      console.log('Images and comments uploaded successfully');
       setCommentInputVisible(false);
-      setComment({ comment1: '', comment2: '' });
+      setComment1('');
+      setComment2('');
     } catch (error) {
-      console.error('Error uploading image and comments: ', error);
+      console.error('Error uploading images and comments:', error);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
@@ -119,9 +135,10 @@ const FleetList = () => {
     fileInput.multiple = true;
     fileInput.onchange = (e) => {
       const files = Array.from(e.target.files);
-      compressAndUploadImages(currentUnitId, files, comment);
+      compressAndUploadImages(currentUnitId, files, comment1, comment2, true);
     };
     fileInput.click();
+    setCommentInputVisible(false);
   };
 
   const ByCustomer = {};
@@ -164,25 +181,36 @@ const FleetList = () => {
     setSelectedImageUrl('');
   };
 
-  const UnitImages = ({ imageUrls, comments }) => (
-    <div className="unit-images">
-      {imageUrls && imageUrls.map((imageUrl, index) => (
-        <div key={index}>
-          <p className='unit-comment'>
-            Position: {comments[index]?.comment1 }<br />
-            Tread Depth: {comments[index]?.comment2 || 'NA'}/32
-          </p>
-          <img
-            src={imageUrl}
-            alt={`Image ${index + 1}`}
-            className='unit-image'
-            onClick={() => handleImageClick(imageUrl)}
-          />
-        </div>
-      ))}
-    </div>
-  );
+  const UnitImages = ({ imageUrls, comments = [] }) => {
+    // Create a mapping of comments to images
+    const imagesByComments = comments.reduce((acc, comment, index) => {
+      const commentText = `Position: ${comment.comment1}, Tread Depth: ${comment.comment2 || 'NA'}/32`;
+      acc[commentText] = comment.imageUrls || [];
+      return acc;
+    }, {});
+  
+    return (
+      <div className="unit-images">
+        {Object.entries(imagesByComments).map(([comment, urls], index) => (
+          <div key={index}>
+            <p className="unit-comment">{comment}</p>
+            {urls.map((url, idx) => (
+              <img
+                key={idx}
+                src={url}
+                alt={`Image ${idx + 1}`}
+                className="unit-image"
+                onClick={() => handleImageClick(url)}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
+
+  
   return (
     <div>
       <div className='current-user'>
@@ -212,36 +240,30 @@ const FleetList = () => {
                   .sort((unitA, unitB) => {
                     const priorityOrder = { low: 3, medium: 2, high: 1 };
                     return priorityOrder[unitA.priority] - priorityOrder[unitB.priority];
-                  }).map((unit) => (
+                  })
+                  .map((unit) => (
                     <li key={unit.id} className={`unit-item ${unit.done ? 'done' : ''} ${unit.priority}`}>
-                      <strong>Unit Number:</strong> {unit.UnitNumber}
+                      <strong>Unit Number:</strong> {unit.UnitNumber} <strong>Priority:</strong> {unit.priority}
                       <ul>
                         {unit.TaskSpecifics &&
                           unit.TaskSpecifics.length > 0 &&
                           unit.TaskSpecifics.map((info, index) => (
                             <li key={index}>
-                              <strong>Position:</strong> {info.position}, <strong>Specifics:</strong>{' '}
-                              {info.specifics}, <strong>Tread Depth:</strong> {info.treadDepth}/32
+                              <strong>Position:</strong> {info.position}, <strong>Specifics:</strong> {info.specifics}, <strong>Tread Depth:</strong> {info.treadDepth}/32
                               <p className='tireNeeded'><strong>Tire Needed:</strong> {info.neededTire}</p>
                             </li>
                           ))}
-                      </ul>
-                      <UnitImages imageUrls={unit.imageUrls} comments={unit.comments} />
-                      <button
-                        className={`unit-button ${unit.done ? 'completed' : ''}`}
-                        onClick={() => handleDone(unit.id, !unit.done)}
-                      >
-                        {unit.done ? 'Completed' : 'Mark Done'}
-                      </button>
-                      <button
-                        className='unit-button'
-                        onClick={() => handleUploadClick(unit.id)}
-                      > 
-                        Upload Image
-                      </button>
-                    </li>
+        </ul>
+        <div className="button-group">
+          <button onClick={() => handleDone(unit.id, !unit.done)}>
+            Mark as {unit.done ? 'Not Done' : 'Done'}
+          </button>
+          <button onClick={() => handleUploadClick(unit.id)}>Upload Image</button>
+        </div>
+        <UnitImages comments={unit.comments} />
+      </li>
                   ))}
-              </ul> 
+              </ul>
             )}
           </div>
         ))}
@@ -252,37 +274,33 @@ const FleetList = () => {
           <div className="comment-popup">
             <input
               type="text"
-              value={comment.comment1}
-              onChange={(e) => setComment({ ...comment, comment1: e.target.value })}
-              placeholder="Enter your first comment"
+              value={comment1}
+              onChange={(e) => setComment1(e.target.value)}
+              placeholder="Enter Position"
             />
-            <input
-              type="text"
-              value={comment.comment2}
-              onChange={(e) => setComment({ ...comment, comment2: e.target.value })}
-              placeholder="Enter your second comment"
-            />
+
+<input
+  type="number"
+  value={comment2}
+  onChange={(e) => setComment2(e.target.value)}
+  placeholder="Tread Depth"
+/>
             <button onClick={handleCommentSubmit}>Enter Position and Upload Images</button>
           </div>
         </>
       )}
 
       {isImagePopupVisible && (
-        <>
-          <div className="overlay" onClick={closeImagePopup} />
-          <div className="image-popup">
-            <img src={selectedImageUrl} alt="Selected" />
-          </div>
-        </>
+        <div className="image-popup" onClick={closeImagePopup}>
+          <img src={selectedImageUrl} alt="Popup" className="popup-image" />
+        </div>
       )}
       {isLoading && (
-        <div className="loading-overlay">
+        <div className="loading-popup">
           <Oval
             height={100}
             width={100}
             color="#4fa94d"
-            wrapperStyle={{}}
-            wrapperClass=""
             visible={true}
             ariaLabel='oval-loading'
             secondaryColor="#4fa94d"

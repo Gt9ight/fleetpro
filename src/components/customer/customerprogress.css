@@ -1,3 +1,4 @@
+
 *{
   color: black;
 }
@@ -185,14 +186,16 @@
 }
 
 .unit-image {
-  width: 40px;
-  height: 40px;
+  max-width: calc(50% - 20px);
+  margin-bottom: 20px;
+  max-height: 150px;
+  display: block;
+  margin: 10px auto;
   object-fit: contain;
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  margin-left: auto; /* Align image to the right */
 }
+
 .unit-images {
   display: flex;
   flex-wrap: wrap;

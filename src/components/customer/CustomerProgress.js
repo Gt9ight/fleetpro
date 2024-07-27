@@ -6,7 +6,7 @@ import './customerprogress.css';
 const Customerprogress = () => {
   const [FleetsFromFirestore, setFleetsFromFirestore] = useState([]);
   const [showCustomerCategory, setShowCustomerForCategory] = useState(null);
-  const [isImagePopupVisible, setImagePopupVisible] = useState(false);
+  const [isImagePopupVisible, setIsImagePopupVisible] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState('');
 
   useEffect(() => {
@@ -58,32 +58,40 @@ const Customerprogress = () => {
 
   const handleImageClick = (imageUrl) => {
     setSelectedImageUrl(imageUrl);
-    setImagePopupVisible(true);
+    setIsImagePopupVisible(true);
   };
 
   const closeImagePopup = () => {
-    setImagePopupVisible(false);
+    setIsImagePopupVisible(false);
     setSelectedImageUrl('');
   };
 
-  const UnitImages = ({ imageUrls, comments }) => (
-    <div className="unit-images">
-      {imageUrls && imageUrls.map((imageUrl, index) => (
-        <div key={index}>
-          <p className='unit-comment'>
-            Position: {comments[index]?.comment1}<br />
-            Tread Depth: {comments[index]?.comment2 || 'NA'}/32
-          </p>
-          <img
-            src={imageUrl}
-            alt={`Image ${index + 1}`}
-            className='unit-image'
-            onClick={() => handleImageClick(imageUrl)}
-          />
-        </div>
-      ))}
-    </div>
-  );
+  const UnitImages = ({ comments = [] }) => {
+    const imagesByComments = comments.reduce((acc, comment, index) => {
+      const commentText = `Position: ${comment.comment1}, Tread Depth: ${comment.comment2 || 'NA'}/32`;
+      acc[commentText] = comment.imageUrls || [];
+      return acc;
+    }, {});
+
+    return (
+      <div className="unit-images">
+        {Object.entries(imagesByComments).map(([comment, urls], index) => (
+          <div key={index}>
+            <p className="unit-comment">{comment}</p>
+            {urls.map((url, idx) => (
+              <img
+                key={idx}
+                src={url}
+                alt={`Image ${idx + 1}`}
+                className="unit-image"
+                onClick={() => handleImageClick(url)}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div>
@@ -129,7 +137,7 @@ const Customerprogress = () => {
                             </li>
                           ))}
                       </ul>
-                      <UnitImages imageUrls={unit.imageUrls} comments={unit.comments} />
+                      <UnitImages comments={unit.comments} />
                     </li>
                   ))}
               </ul>
