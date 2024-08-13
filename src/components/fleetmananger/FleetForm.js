@@ -5,6 +5,7 @@ import { createFleetDatabase, db, storage } from '../../utillis/Firebase';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import imageCompression from 'browser-image-compression';
+import { useSwipeable } from 'react-swipeable';
 import { Oval } from 'react-loader-spinner';
 
 
@@ -25,6 +26,7 @@ function Fleetform() {
   const [selectedImageUrl, setSelectedImageUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [comment2, setComment2] = useState('');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleNewCustomerChange = (e) => {
     setNewCustomer(e.target.value);
@@ -49,8 +51,8 @@ function Fleetform() {
         customer: selectedCustomer,
         TaskSpecifics: [],
         priority,
-        comments: [], // Initialize comments array
-        imageUrls: [] // Initialize imageUrls array
+        comments: [], 
+        imageUrls: [] 
       };
       setCustomerFleet([...customerFleet, newUnit].sort((a, b) => {
         const priorityOrder = { low: 3, medium: 2, high: 1 };
@@ -170,8 +172,7 @@ function Fleetform() {
   
       if (commentIndex !== -1) {
         existingComments[commentIndex].imageUrls = [
-          ...(existingComments[commentIndex].imageUrls || []),
-          ...newImageUrls,
+          ...new Set([...(existingComments[commentIndex].imageUrls || []), ...newImageUrls])
         ];
       } else {
         existingComments.push({
@@ -235,45 +236,77 @@ function Fleetform() {
     return ByCustomer[cust]?.filter((unit) => unit.done).length || 0;
   };
 
-  const handleImageClick = (imageUrl) => {
-    setSelectedImageUrl(imageUrl);
+  const handleImageClick = (imageUrls) => {
+    setSelectedImageUrl(imageUrls);
+    setCurrentImageIndex(0);
     setImagePopupVisible(true);
   };
 
-  const closeImagePopup = () => {
-    setImagePopupVisible(false);
-    setSelectedImageUrl('');
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % selectedImageUrl.length);
   };
 
-  const UnitImages = ({ imageUrls, comments = [] }) => {
-    // Create a mapping of comments to images
-    const imagesByComments = comments.reduce((acc, comment, index) => {
-      const commentText = `Position: ${comment.comment1}, Tread Depth: ${comment.comment2 || 'NA'}/32`;
-      acc[commentText] = comment.imageUrls || [];
-      return acc;
-    }, {});
-  
-    return (
-      <div className="unit-images">
-        {Object.entries(imagesByComments).map(([comment, urls], index) => (
-          <div key={index}>
-            <p className="unit-comment">{comment}</p>
-            {urls.map((url, idx) => (
-              <img
-                key={idx}
-                src={url}
-                alt={`Image ${idx + 1}`}
-                className="unit-image"
-                onClick={() => handleImageClick(url)}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) => 
+      (prevIndex === 0 ? selectedImageUrl.length : prevIndex) - 1
     );
   };
 
+  const handlers = useSwipeable({
+    onSwipedLeft: handleNextImage,
+    onSwipedRight: handlePrevImage,
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
 
+  const closeImagePopup = () => {
+    setImagePopupVisible(false);
+    setSelectedImageUrl([]);
+  };
+;
+
+const UnitImages = ({ comments }) => {
+  if (!comments || comments.length === 0) return null;
+
+  return (
+    <div>
+      {comments.map((comment, index) => (
+        <div key={index} className="image-comment-container">
+          <div className="comments">
+            <p><strong>Position:</strong> {comment.comment1}</p>
+            <p><strong>Tread Depth:</strong> {comment.comment2}/32</p>
+          </div>
+          <div className="image-stack">
+            {comment.imageUrls && comment.imageUrls.length > 1 ? (
+              <div
+                className="image-overlay"
+                onClick={() => handleImageClick(comment.imageUrls)}
+              >
+                {comment.imageUrls.slice(0, 3).map((url, imgIndex) => (
+                  <img
+                    key={imgIndex}
+                    src={url}
+                    alt={`Thumbnail ${imgIndex + 1}`}
+                    className={`thumbnail-image ${
+                      imgIndex === 0 ? 'top' : 'stacked'
+                    }`}
+                  />
+                ))}
+              </div>
+            ) : comment.imageUrls && comment.imageUrls.length === 1 ? (
+              <img
+                src={comment.imageUrls[0]}
+                alt="Single Image"
+                className="single-image"
+                onClick={() => handleImageClick(comment.imageUrls)}
+              />
+            ) : null}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 
   
@@ -380,13 +413,23 @@ function Fleetform() {
       )}
 
 {isImagePopupVisible && (
-        <>
-          <div className="overlay" onClick={closeImagePopup} />
-          <div className="image-popup">
-            <img src={selectedImageUrl} alt="Selected" />
-          </div>
-        </>
-      )}
+  <div className="image-popup" {...handlers}>
+    <button className="nav-button left" onClick={handlePrevImage}>
+      &lt;
+    </button>
+    <img
+      src={selectedImageUrl[currentImageIndex]}
+      alt="Popup"
+      className="popup-image"
+    />
+    <button className="nav-button right" onClick={handleNextImage}>
+      &gt;
+    </button>
+    <button className="close-button" onClick={closeImagePopup}>
+      X
+    </button>
+  </div>
+)}
 
 {isLoading && (
         <div className="loading-overlay">
