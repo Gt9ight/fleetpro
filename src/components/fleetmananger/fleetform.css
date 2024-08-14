@@ -1,23 +1,26 @@
+/* General Styles */
 h1 {
   text-align: center;
-  font-size: 2rem;
+  font-size: 1.8rem; /* Slightly smaller for mobile */
+  margin: 10px 0;
 }
 
 .customer, .customer-creation {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px; /* Reduced margin for mobile */
 }
 
+/* Flexbox for Wrapping Content */
 .customers {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .customers button {
   margin: 5px;
-  padding: 5px 10px;
+  padding: 8px 12px; /* Slightly larger touch area */
   border: 1px solid #ccc;
   background-color: #f0f0f0;
   cursor: pointer;
@@ -30,29 +33,32 @@ h1 {
 }
 
 .username {
-  font-size: 15px;
+  font-size: 1rem; /* Slightly larger for readability */
   font-weight: bold;
 }
 
+/* Input Section */
 .input-section {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   gap: 10px;
 }
 
 .unit-input {
-  padding: 8px;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: calc(100% - 20px);
-  max-width: 300px;
+  width: 100%;
+  max-width: 280px; /* Slightly narrower for mobile */
   box-sizing: border-box;
 }
 
-.add-button {
-  padding: 8px 15px;
+/* Buttons */
+.add-button, .unit-button, .comment-popup button {
+  padding: 10px 15px;
+  font-size: 1rem;
   background-color: #4CAF50;
   color: white;
   border: none;
@@ -71,80 +77,32 @@ h1 {
   width: 100%;
 }
 
+/* Cards */
 .unit-card {
   border: 1px solid #ccc;
-  padding: 20px;
+  padding: 15px; /* Reduced padding for mobile */
   border-radius: 5px;
   margin-bottom: 10px;
   cursor: pointer;
   transition: transform 0.3s ease;
-  max-width: 400px;
+  max-width: 100%; /* Full width on mobile */
   width: 100%;
   box-sizing: border-box;
 }
 
-.unit-button {
-  margin: 5px;
-  padding: 8px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.unit-card ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 10px;
-}
-
-.unit-card button {
-  margin-top: 5px;
-  padding: 5px 10px;
-  background-color: #f44336;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.unit-card.priority-low {
-  border-left: 5px solid #4c8ed4;
-}
-
-.unit-card.priority-medium {
-  border-left: 5px solid #FFC107;
-}
-
-.unit-card.priority-high {
-  border-left: 5px solid #F44336;
-}
-
-.unit-image {
-  max-width: calc(50% - 20px);
-  margin-bottom: 20px;
-  max-height: 150px;
-  display: block;
-  margin: 10px auto;
-  object-fit: contain;
-  border-radius: 5px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  cursor: pointer; 
-}
-
-.image-popup {
+/* Popup Adjustments */
+.image-popup, .specifics-popup, .comment-popup {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #0000006e;
+  background: white;
   padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   z-index: 1001;
-  width: 80%;
-  max-width: 500px;
+  width: 90%; /* More width on mobile */
+  max-width: 350px;
   text-align: center;
 }
 
@@ -164,41 +122,12 @@ h1 {
   z-index: 1;
 }
 
-.specifics-popup,
-.comment-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  z-index: 2;
-  width: 80%;
-  max-width: 300px;
-  text-align: center;
-}
-
 .comment-popup input[type='text'] {
-  width: 80%;
-  padding: 10px;
+  width: 90%;
+  padding: 8px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
-}
-
-.comment-popup button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.comment-popup button:hover {
-  background-color: #0056b3;
 }
 
 .current-user {
@@ -215,16 +144,16 @@ h1 {
   background-color: rgb(103, 155, 103);
   color: white;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px; /* Slightly larger for readability */
   height: 40px;
-  padding: 0 15px;
+  padding: 0 10px; /* Reduced padding */
   flex: 1 0 100%;
   text-align: center;
 }
 
 .submission-button {
   display: block;
-  margin: 20px auto;
+  margin: 15px auto; /* Reduced margin */
   padding: 10px 20px;
   background-color: #2196F3;
   color: white;
@@ -234,7 +163,7 @@ h1 {
 }
 
 .category-cards {
-  width: 90%;
+  width: 100%; /* Full width on mobile */
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -255,44 +184,7 @@ h1 {
   background-color: #e0e0e0;
 }
 
-.progress-bar {
-  width: 100%;
-  background-color: #ccc;
-  height: 10px;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-top: 5px;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  background-color: #4CAF50;
-  transition: width 0.3s ease;
-}
-
-
-.tireNeeded{
-  background-color: #dcd5d5;
-}
-
-.unit-card.done {
-  background-color: #4CAF50;
-  border-left-color: #4CAF50;
-}
-
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-}
-
+/* Image Adjustments */
 .unit-images {
   display: flex;
   flex-direction: column;
@@ -302,6 +194,7 @@ h1 {
 .unit-comment {
   margin-bottom: 10px;
   font-weight: bold;
+  font-size: 0.9rem; /* Adjusted font size for readability */
 }
 
 .image-card {
@@ -325,30 +218,7 @@ h1 {
   transform: scale(1.05);
 }
 
-.image-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #fff;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  z-index: 1001;
-  text-align: center;
-  max-width: 500px;
-  width: 80%;
-}
-
-.image-popup img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-
-.prev-button,
-.next-button,
-.close-button {
+.prev-button, .next-button, .close-button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -374,11 +244,12 @@ h1 {
   right: 10px;
   transform: translate(0, 0);
 }
+
 .unit-images > div {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 1px;
+  padding: 5px; /* Increased padding for better touch area */
   background-color: #f0f0f0;
   border-radius: 10px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -387,12 +258,23 @@ h1 {
 .unit-comment {
   margin: 0;
   padding: 5px;
-  font-size: 0.9em;
+  font-size: 1rem; /* Adjusted for readability */
   flex: 1;
   text-align: left;
 }
 
 
+.unit-card {
+  background-color: white;
+  transition: background-color 0.4s ease;
+}
 
+.unit-card.done {
+  background-color: #2ecc71;
+}
 
-  
+.tireNeeded{
+  background-color: #ccc;
+  position: relative;
+  left: 0px;
+}
