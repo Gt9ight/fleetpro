@@ -184,17 +184,21 @@ const Customerprogress = () => {
 
       {isImagePopupVisible && (
   <div className="image-popup" {...handlers}>
-    <button className="nav-button left" onClick={handlePrevImage}>
-      &lt;
-    </button>
+    {selectedImageUrl.length > 1 && (
+      <>
+        <button className="nav-button left" onClick={handlePrevImage}>
+          &lt;
+        </button>
+        <button className="nav-button right" onClick={handleNextImage}>
+          &gt;
+        </button>
+      </>
+    )}
     <img
       src={selectedImageUrl[currentImageIndex]}
       alt="Popup"
       className="popup-image"
     />
-    <button className="nav-button right" onClick={handleNextImage}>
-      &gt;
-    </button>
     <button className="close-button" onClick={closeImagePopup}>
       X
     </button>

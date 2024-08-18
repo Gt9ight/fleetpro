@@ -1,16 +1,16 @@
-/* General Styles */
+
 h1 {
   text-align: center;
-  font-size: 1.8rem; /* Slightly smaller for mobile */
+  font-size: 1.8rem; 
   margin: 10px 0;
 }
 
 .customer, .customer-creation {
   text-align: center;
-  margin-bottom: 15px; /* Reduced margin for mobile */
+  margin-bottom: 15px;
 }
 
-/* Flexbox for Wrapping Content */
+
 .customers {
   display: flex;
   justify-content: center;
@@ -20,7 +20,7 @@ h1 {
 
 .customers button {
   margin: 5px;
-  padding: 8px 12px; /* Slightly larger touch area */
+  padding: 8px 12px;
   border: 1px solid #ccc;
   background-color: #f0f0f0;
   cursor: pointer;
@@ -33,11 +33,11 @@ h1 {
 }
 
 .username {
-  font-size: 1rem; /* Slightly larger for readability */
+  font-size: 1rem; 
   font-weight: bold;
 }
 
-/* Input Section */
+
 .input-section {
   display: flex;
   justify-content: center;
@@ -51,11 +51,11 @@ h1 {
   border: 1px solid #ccc;
   border-radius: 4px;
   width: 100%;
-  max-width: 280px; /* Slightly narrower for mobile */
+  max-width: 280px; 
   box-sizing: border-box;
 }
 
-/* Buttons */
+
 .add-button, .unit-button, .comment-popup button {
   padding: 10px 15px;
   font-size: 1rem;
@@ -64,6 +64,13 @@ h1 {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.delete-button{
+  background-color: rgb(249, 98, 98);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
 }
 
 .unit-list {
@@ -77,20 +84,26 @@ h1 {
   width: 100%;
 }
 
-/* Cards */
 .unit-card {
   border: 1px solid #ccc;
-  padding: 15px; /* Reduced padding for mobile */
+  padding: 15px; 
   border-radius: 5px;
   margin-bottom: 10px;
   cursor: pointer;
   transition: transform 0.3s ease;
-  max-width: 100%; /* Full width on mobile */
+  max-width: 100%; 
   width: 100%;
   box-sizing: border-box;
 }
 
-/* Popup Adjustments */
+
+.fleet-button{
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
+}
+
+
 .image-popup, .specifics-popup, .comment-popup {
   position: fixed;
   top: 50%;
@@ -101,7 +114,7 @@ h1 {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   z-index: 1001;
-  width: 90%; /* More width on mobile */
+  width: 90%; 
   max-width: 350px;
   text-align: center;
 }
@@ -144,16 +157,16 @@ h1 {
   background-color: rgb(103, 155, 103);
   color: white;
   cursor: pointer;
-  font-size: 14px; /* Slightly larger for readability */
+  font-size: 14px;
   height: 40px;
-  padding: 0 10px; /* Reduced padding */
+  padding: 0 10px;
   flex: 1 0 100%;
   text-align: center;
 }
 
 .submission-button {
   display: block;
-  margin: 15px auto; /* Reduced margin */
+  margin: 15px auto;
   padding: 10px 20px;
   background-color: #2196F3;
   color: white;
@@ -163,7 +176,7 @@ h1 {
 }
 
 .category-cards {
-  width: 100%; /* Full width on mobile */
+  width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -184,7 +197,7 @@ h1 {
   background-color: #e0e0e0;
 }
 
-/* Image Adjustments */
+
 .unit-images {
   display: flex;
   flex-direction: column;
@@ -194,7 +207,7 @@ h1 {
 .unit-comment {
   margin-bottom: 10px;
   font-weight: bold;
-  font-size: 0.9rem; /* Adjusted font size for readability */
+  font-size: 0.9rem;
 }
 
 .image-card {
@@ -249,7 +262,7 @@ h1 {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 5px; /* Increased padding for better touch area */
+  padding: 5px;
   background-color: #f0f0f0;
   border-radius: 10px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -258,7 +271,7 @@ h1 {
 .unit-comment {
   margin: 0;
   padding: 5px;
-  font-size: 1rem; /* Adjusted for readability */
+  font-size: 1rem; 
   flex: 1;
   text-align: left;
 }

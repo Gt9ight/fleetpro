@@ -354,7 +354,8 @@ const UnitImages = ({ comments }) => {
       return (
         <li key={index} className={`unit-card priority-${unit.priority}`}>
           <strong>Unit Number:</strong>{unit.UnitNumber}
-          <button
+          <div className='fleet-button'>
+          <button className='unit-button'
             onClick={() => {
               setCurrentUnitIndex(index);
               setShowPopup(true);
@@ -363,6 +364,7 @@ const UnitImages = ({ comments }) => {
             Add Specifics
           </button>
           <button onClick={() => handleUploadClick(index)} className='unit-button'>Upload Image</button>
+          </div>
           <ul>
             {unit.TaskSpecifics.map((details, subIndex) => (
               <li key={subIndex}>
@@ -372,7 +374,7 @@ const UnitImages = ({ comments }) => {
             ))}
           </ul>
           <UnitImages imageUrls={unit.imageUrls} comments={unit.comments} />
-          <button onClick={() => handleDeleteUnitNumber(index)}>Delete</button>
+          <button className='delete-button' onClick={() => handleDeleteUnitNumber(index)}>Delete</button>
         </li>
       );
     }
@@ -414,17 +416,21 @@ const UnitImages = ({ comments }) => {
 
 {isImagePopupVisible && (
   <div className="image-popup" {...handlers}>
-    <button className="nav-button left" onClick={handlePrevImage}>
-      &lt;
-    </button>
+    {selectedImageUrl.length > 1 && (
+      <>
+        <button className="nav-button left" onClick={handlePrevImage}>
+          &lt;
+        </button>
+        <button className="nav-button right" onClick={handleNextImage}>
+          &gt;
+        </button>
+      </>
+    )}
     <img
       src={selectedImageUrl[currentImageIndex]}
       alt="Popup"
       className="popup-image"
     />
-    <button className="nav-button right" onClick={handleNextImage}>
-      &gt;
-    </button>
     <button className="close-button" onClick={closeImagePopup}>
       X
     </button>
