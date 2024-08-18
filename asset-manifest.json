@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/fleetpro/static/css/main.b91a5283.css",
+    "main.css": "/fleetpro/static/css/main.9ec38589.css",
     "main.js": "/fleetpro/static/js/main.3766b20f.js",
     "static/js/453.2d107e61.chunk.js": "/fleetpro/static/js/453.2d107e61.chunk.js",
     "index.html": "/fleetpro/index.html",
-    "main.b91a5283.css.map": "/fleetpro/static/css/main.b91a5283.css.map",
+    "main.9ec38589.css.map": "/fleetpro/static/css/main.9ec38589.css.map",
     "main.3766b20f.js.map": "/fleetpro/static/js/main.3766b20f.js.map",
     "453.2d107e61.chunk.js.map": "/fleetpro/static/js/453.2d107e61.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b91a5283.css",
+    "static/css/main.9ec38589.css",
     "static/js/main.3766b20f.js"
   ]
 }
