@@ -314,6 +314,17 @@ body {
     padding: 10px;
     margin-bottom: 10px;
   }
+
+  .single-image {
+    width: 70%;
+    height: 80%;
+    max-height: 150px;
+    border-radius: 8px;
+    cursor: pointer;
+    max-width: calc(80% - 20px);
+    margin-bottom: 20px;
+  }
+
 }
 
 
