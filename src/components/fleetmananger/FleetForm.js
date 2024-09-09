@@ -115,13 +115,16 @@ function Fleetform() {
   };
 
 
+  let isSubmitting = false; // Add a flag to track submissions
+
   const handleCommentSubmit = () => {
-    if (isLoading) return; // Prevent duplicate uploads while one is in progress
-    setIsLoading(true); // Disable further uploads
+    if (isSubmitting) return; // Prevent double submission
+    isSubmitting = true; // Set flag to true when submit is clicked
   
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.multiple = true;
+    
     fileInput.onchange = (e) => {
       const files = Array.from(e.target.files);
   
@@ -129,12 +132,20 @@ function Fleetform() {
       const isDuplicate = files.some(file => customerFleet[currentUnitIndex]?.imageUrls?.includes(file.name));
       if (isDuplicate) {
         console.warn('Duplicate image detected, skipping upload.');
-        setIsLoading(false);
+        isSubmitting = false; // Reset submission flag
         return;
       }
   
       compressAndUploadImages(currentUnitIndex, files, comment1, comment2);
+  
+      // Clear file input after submission to prevent resubmission
+      fileInput.value = null;
+  
+      setTimeout(() => {
+        isSubmitting = false; // Reset flag after upload completes
+      }, 1000); // Add a delay to ensure multiple submissions can't happen too fast
     };
+  
     fileInput.click();
     setCommentInputVisible(false);
   };
