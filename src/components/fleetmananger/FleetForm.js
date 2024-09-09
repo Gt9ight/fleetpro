@@ -167,8 +167,9 @@ function Fleetform() {
       );
   
       const commentIndex = existingComments.findIndex(
-        (comment) => comment.comment1 === comment1 && comment.comment2 === comment2
+        (comment) => comment.comment1.trim() === comment1.trim() && comment.comment2.trim() === comment2.trim()
       );
+      
   
       if (commentIndex !== -1) {
         existingComments[commentIndex].imageUrls = [
