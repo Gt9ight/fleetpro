@@ -116,16 +116,29 @@ function Fleetform() {
 
 
   const handleCommentSubmit = () => {
+    if (isLoading) return; // Prevent duplicate uploads while one is in progress
+    setIsLoading(true); // Disable further uploads
+  
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.multiple = true;
     fileInput.onchange = (e) => {
       const files = Array.from(e.target.files);
+  
+      // Check for duplicate filenames before upload
+      const isDuplicate = files.some(file => customerFleet[currentUnitIndex]?.imageUrls?.includes(file.name));
+      if (isDuplicate) {
+        console.warn('Duplicate image detected, skipping upload.');
+        setIsLoading(false);
+        return;
+      }
+  
       compressAndUploadImages(currentUnitIndex, files, comment1, comment2);
     };
     fileInput.click();
     setCommentInputVisible(false);
   };
+  
   
 
   const compressAndUploadImages = async (unitIndex, files, comment1, comment2) => {
