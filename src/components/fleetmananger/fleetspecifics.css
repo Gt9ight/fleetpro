@@ -21,6 +21,13 @@
     border-radius: 3px;
     border: 1px solid #ccc;
   }
+
+  .fleet-popup select{
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+  }
   
   .fleet-popup button {
     padding: 10px 15px;
@@ -36,3 +43,83 @@
     background-color: #0056b3;
   }
   
+
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%; /* Make the popup responsive */
+    max-width: 500px; /* Set a max width for larger screens */
+    height: 80vh; /* Restrict height */
+    max-height: 600px; /* Set a max height */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    z-index: 1000; /* Ensure the popup is above other content */
+  }
+  
+  .popup .unitDiagram {
+    max-height: 100%; /* Ensure the content fits in the popup */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .popup .unit-container {
+    width: 90%; /* Widen the container */
+    height:70vh; /* Allow container to grow with content */
+    justify-content: space-between;
+    display: flex;
+    align-items: end;
+  }
+  /* Adjust the positions for better spacing */
+  .specificPosition{
+    background-image: url('tireselect.png');
+    background-size: 120px 120px; /* Adjust this size to fit your layout */
+    background-repeat: no-repeat;
+    background-position: center; 
+    border: none;
+    height: 50px;
+    width: 50px;
+    margin: 5px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    outline: none
+  }
+  
+  .specificPosition:hover {
+    background-color: rgba(0, 0, 0, 0.2); /* Add a hover effect */
+  }
+  
+  .selected {
+    color: rgb(81, 214, 81); /* Change text color to green for selected items */
+  }
+
+  .selected-positions{
+    margin-bottom: 10px;
+    text-decoration-style: wavy;
+  }
+  
+  /* Styles for the Done button */
+  .doneButton {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-end;
+  }
+  
+  .doneButton:hover {
+    background-color: #45a049;
+  }

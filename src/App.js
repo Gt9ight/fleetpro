@@ -4,6 +4,8 @@ import { useContext } from "react";
 import Home from "./components/home/Home";
 import Customerprogress from "./components/customer/CustomerProgress";
 import FleetList from "./components/tech/FleetList";
+
+
 function App() {
   // const { currentUser } = useContext(AuthContext);
 
@@ -27,6 +29,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+ 
     </div>
   );
 }

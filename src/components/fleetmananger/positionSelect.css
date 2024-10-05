@@ -1,0 +1,104 @@
+.specificPosition{
+  background-image: url('tireselect.png');
+  background-size: 120px 120px; /* Adjust this size to fit your layout */
+  background-repeat: no-repeat;
+  background-position: center; 
+  border: none;
+  height: 50px;
+  width: 50px;
+  margin: 5px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  outline: none
+}
+
+.specificPosition:hover {
+  background-color: rgba(0, 0, 0, 0.2); /* Add a hover effect */
+}
+
+.selected {
+  color: rgb(81, 214, 81); /* Change text color to green for selected items */
+}
+
+.unit-container{
+  border: solid 1px;
+  width: 30%;
+  height: 80vh;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+}
+
+.frontOfUnit{
+  border: solid 1px;
+  border-bottom: none;
+  width: 150px;
+  text-align: center;
+  padding: 40px;
+  margin: 0%;
+  background-color: rgb(180, 176, 176);
+}
+
+.unitDiagram{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.leftFrontTandem, 
+.leftRearTandem, 
+.rightFrontTandem, 
+.rightRearTandem {
+  display: flex;
+}
+
+.leftFrontTandem, .rightFrontTandem{
+  margin-bottom: 20px;
+}
+
+.doneButton{
+  background-color: rgb(69, 135, 173);
+  color: aliceblue;
+  font-weight: bold;
+  padding: 10px;
+  margin-top: 5px;
+  width: 100px;
+  border-radius: 4px;
+}
+
+
+@media screen and (max-width: 768px) {
+  .specificPosition {
+    background-size: 80px 80px; /* Reduce background size */
+    height: 60px; /* Smaller height for mobile */
+    width: 60px;  /* Smaller width for mobile */
+    padding: 5px; /* Reduce padding */
+    margin: 5px; /* Adjust margin for tighter fit */
+  }
+
+  .unit-container {
+    width: 90%; /* Widen the container */
+    height:70vh; /* Allow container to grow with content */
+    justify-content: space-between;
+    display: flex;
+    align-items: end;
+  }
+
+  .frontOfUnit {
+    width: 120px; /* Adjust width */
+    padding: 30px; /* Adjust padding */
+  }
+
+  .leftFrontTandem, 
+  .leftRearTandem, 
+  .rightFrontTandem, 
+  .rightRearTandem {
+    margin-bottom: 20px;
+    justify-content: center;
+  }
+}

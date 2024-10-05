@@ -4,6 +4,7 @@ import { getDocs, collection } from 'firebase/firestore';
 import { useSwipeable } from 'react-swipeable';
 import './customerprogress.css';
 
+
 const Customerprogress = () => {
   const [FleetsFromFirestore, setFleetsFromFirestore] = useState([]);
   const [showCustomerCategory, setShowCustomerForCategory] = useState(null);
@@ -135,11 +136,15 @@ const Customerprogress = () => {
         <p className='username'>Welcome,</p>
         {/* <button className='logout'>Log Out</button> */}
       </div>
-      <h2 className='fleetList-title'>Fleets</h2>
+      <h2 className='fleetList-title'>Freedom Fleet</h2>
 
       <div className="category-cards">
+
+        <h1>Fleets</h1>
+      
         {Object.keys(ByCustomer).map((Fleetcustomer) => (
           <div key={Fleetcustomer} className="category-card">
+            
             <div
               onClick={() => toggleCustomerForCategory(Fleetcustomer)}
               className={`category-header ${showCustomerCategory === Fleetcustomer ? 'active' : ''}`}
@@ -180,6 +185,7 @@ const Customerprogress = () => {
             )}
           </div>
         ))}
+        
       </div>
 
       {isImagePopupVisible && (

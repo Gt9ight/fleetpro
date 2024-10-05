@@ -9,6 +9,7 @@ import { useSwipeable } from 'react-swipeable';
 import { Oval } from 'react-loader-spinner';
 
 
+
 function Fleetform() {
   const [newCustomer, setNewCustomer] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState('');
@@ -27,6 +28,7 @@ function Fleetform() {
   const [isLoading, setIsLoading] = useState(false);
   const [comment2, setComment2] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
 
   const handleNewCustomerChange = (e) => {
     setNewCustomer(e.target.value);
@@ -477,9 +479,9 @@ const UnitImages = ({ comments }) => {
       )}
 
 
-      <h1>See how you're other fleets are doing!</h1>
-
 <div className="category-cards">
+
+    <h1>See how you're other fleets are doing!</h1>
 {Object.keys(ByCustomer).map((Fleetcustomer) => (
   <div key={Fleetcustomer} className="category-card">
     <div

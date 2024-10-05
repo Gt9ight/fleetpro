@@ -1,75 +1,138 @@
 import React, { useState } from 'react';
-import './fleetspecifics.css'
-
+import './fleetspecifics.css';
+import PositionSelect from './PositionSelect';
 
 const FleetSpecifics = ({ onClose, onSave }) => {
-    const [position, setPosition] = useState('');
-    const [specifics, setSpecifics] = useState('');
-    const [treadDepth, setTreadDepth] = useState('');
-    const [neededTire, setNeededTire] = useState('');
-  
-    const handlePosition = (e) => {
-      setPosition(e.target.value);
-    };
-  
-    const handleSpecifics = (e) => {
-      setSpecifics(e.target.value);
-    };
-  
-    const handleTreadDepth = (e) => {
-      setTreadDepth(e.target.value);
-    };
-    const handleNeededTire = (e) => {
-      setNeededTire(e.target.value);
-    };
-  
-    const handleSaveSpecifics = () => {
-      onSave({ position, specifics, treadDepth, neededTire }); 
-      setPosition('');
-      setSpecifics('');
-      setTreadDepth('');
-      setNeededTire('');
-    };
-  
-    return (
-      <div className='fleet-popup'>
-        <label>Position:</label>
-        <input
-          type="text"
-          value={position}
-          onChange={handlePosition}
-          placeholder="Enter Position"
-        />
-  
-        <label>Specifics</label>
-        <input
-          type="text"
-          value={specifics}
-          onChange={handleSpecifics}
-          placeholder="Enter Specifics"
-        />
-  
-        <label>Tread Depth:</label>
-        <input
-          type="number"
-          value={treadDepth}
-          onChange={handleTreadDepth}
-          placeholder="Tread Depth"
-        />
+  const [position, setPosition] = useState('');
+  const [specifics, setSpecifics] = useState('');
+  const [treadDepth, setTreadDepth] = useState('');
+  const [neededTire, setNeededTire] = useState('');
+  const [isPositionSelectOpen, setIsPositionSelectOpen] = useState(false);
 
-        <label>Tire needed:</label>
-        <input
-          type="text"
-          value={neededTire}
-          onChange={handleNeededTire}
-          placeholder="Enter Tire Needed"
-        />
-  
-        <button onClick={handleSaveSpecifics}>Add Position</button>
-        <button onClick={onClose}>Close</button>
-        </div>
-    );
+  const handleSpecifics = (e) => {
+    setSpecifics(e.target.value);
   };
+
+  const handleTreadDepth = (e) => {
+    setTreadDepth(e.target.value);
+  };
+
+  const handleNeededTire = (e) => {
+    setNeededTire(e.target.value);
+  };
+
+  const handleSaveSpecifics = () => {
+    onSave({ position, specifics, treadDepth, neededTire });
+    setPosition(''); 
+    setSpecifics('');
+    setTreadDepth('');
+    setNeededTire('');
+  };
+
+  const togglePositionSelect = () => {
+    setIsPositionSelectOpen(!isPositionSelectOpen);
+  };
+
   
-  export default FleetSpecifics;
+  const formatSelectedPositions = (selectedPositions) => {
+    let formattedPositions = [...selectedPositions]; 
+
+    const allPositions = ['LFO', 'LFI', 'LRO', 'LRI', 'RFO', 'RFI', 'RRO', 'RRI'];
+    const isAllSelected = allPositions.every(pos => selectedPositions.includes(pos));
   
+    if (isAllSelected) {
+      return 'All 8'; 
+    }
+
+    const allRearPositions = [ 'LRO', 'LRI', 'RRO', 'RRI'];
+    const isAllRearSelected = allRearPositions.every(pos => selectedPositions.includes(pos));
+  
+    if (isAllRearSelected) {
+      return 'Rear Axle'; 
+    }
+
+    const allFrontPositions = [ 'LFO', 'LFI', 'RFO', 'RFI'];
+    const isAllFrontSelected = allFrontPositions.every(pos => selectedPositions.includes(pos));
+  
+    if (isAllFrontSelected) {
+      return 'Front Axle'; 
+    }
+
+    // Handle left side (LFO/LFI)
+    if (selectedPositions.includes('LFO') && selectedPositions.includes('LFI')) {
+      formattedPositions = formattedPositions.filter(pos => pos !== 'LFO' && pos !== 'LFI'); 
+      formattedPositions.push('LFI/O'); 
+    }
+
+    // Handle right side (RFO/RFI)
+    if (selectedPositions.includes('RFO') && selectedPositions.includes('RFI')) {
+      formattedPositions = formattedPositions.filter(pos => pos !== 'RFO' && pos !== 'RFI'); 
+      formattedPositions.push('RFI/O'); 
+    }
+
+    if (selectedPositions.includes('RRO') && selectedPositions.includes('RRI')) {
+      formattedPositions = formattedPositions.filter(pos => pos !== 'RRO' && pos !== 'RRI');
+      formattedPositions.push('RRI/O'); 
+    }
+
+    if (selectedPositions.includes('LRO') && selectedPositions.includes('LRI')) {
+      formattedPositions = formattedPositions.filter(pos => pos !== 'LRO' && pos !== 'LRI');
+      formattedPositions.push('LRI/O'); 
+    }
+
+
+    return formattedPositions.join(', '); 
+  };
+
+  const handleSelectPositions = (selectedPositions) => {
+    
+    const formattedPositions = formatSelectedPositions(selectedPositions);
+    setPosition(formattedPositions);
+  };
+
+  return (
+    <div className='fleet-popup'>
+      <button className='positionselction' onClick={togglePositionSelect}>
+        Position Chooser
+      </button>
+      {isPositionSelectOpen && (
+        <div className='popup'>
+          <PositionSelect onClose={togglePositionSelect} onSelectPositions={handleSelectPositions} />
+        </div>
+      )}
+
+      <label><strong>Selected Positions:</strong></label>
+      <div className='selected-positions'>
+        {position ? position : 'No positions selected'}
+      </div>
+
+      <label><strong>Specifics</strong></label>
+      <select value={specifics} onChange={handleSpecifics}>
+        <option value="">Select Specifics</option>
+        <option value="Replace">Replace</option>
+        <option value="Flat Repair">Flat Repair</option>
+      </select>
+
+      <label><strong>Tread Depth:</strong></label>
+      <input
+        type="number"
+        value={treadDepth}
+        onChange={handleTreadDepth}
+        placeholder="Tread Depth"
+      />
+
+      <label><strong>Tire needed:</strong></label>
+      <select value={neededTire} onChange={handleNeededTire}>
+        <option value="">Select Tire Needed</option>
+        <option value="Lp22.5 General RA">Lp22.5 General RA</option>
+        <option value="Lp22.5 General HT+">Lp22.5 General HT+</option>
+        <option value="Lp22.5 General HD+">Lp22.5 General HD+</option>
+      </select>
+
+      <button onClick={handleSaveSpecifics}>Add Position</button>
+      <button onClick={onClose}>Close</button>
+    </div>
+  );
+};
+
+export default FleetSpecifics;
