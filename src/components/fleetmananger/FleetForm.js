@@ -126,6 +126,7 @@ function Fleetform() {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.multiple = true;
+    fileInput.capture = false;
     
     fileInput.onchange = (e) => {
       const files = Array.from(e.target.files);

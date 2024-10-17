@@ -133,6 +133,7 @@ const FleetList = () => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.multiple = true;
+    fileInput.capture = false;
     fileInput.onchange = (e) => {
       const files = Array.from(e.target.files);
       compressAndUploadImages(currentUnitId, files, comment1, comment2, true);
