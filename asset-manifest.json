@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/fleetpro/static/css/main.df7061c2.css",
-    "main.js": "/fleetpro/static/js/main.1b03f4fe.js",
+    "main.js": "/fleetpro/static/js/main.c46bea5a.js",
     "static/js/453.2d107e61.chunk.js": "/fleetpro/static/js/453.2d107e61.chunk.js",
     "static/media/tireselect.png": "/fleetpro/static/media/tireselect.c90bc05888b5b5fb2309.png",
     "index.html": "/fleetpro/index.html",
     "main.df7061c2.css.map": "/fleetpro/static/css/main.df7061c2.css.map",
-    "main.1b03f4fe.js.map": "/fleetpro/static/js/main.1b03f4fe.js.map",
+    "main.c46bea5a.js.map": "/fleetpro/static/js/main.c46bea5a.js.map",
     "453.2d107e61.chunk.js.map": "/fleetpro/static/js/453.2d107e61.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.df7061c2.css",
-    "static/js/main.1b03f4fe.js"
+    "static/js/main.c46bea5a.js"
   ]
 }
