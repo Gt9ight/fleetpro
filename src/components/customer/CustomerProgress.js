@@ -385,80 +385,76 @@ const UnitImages = ({ comments }) => {
       )}
       </div>
 
-
-      <h2 className='customer'>Customer: {selectedCustomer}</h2>
-      
       {showUnitInputs && (
-        <div className='input-section'>
-          <select
-            value={unitType}
-            onChange={(e) => setUnitType(e.target.value)}
-            className={`unit-select ${showError && !unitType ? 'error' : ''}`}
-          >
-            <option value="" disabled>Choose Unit Type</option>
-            <option value="TRK">Truck</option>
-            <option value="TRL">Trailer</option>
-          </select>
-          <input
-            type='text'
-            value={inputValue}
-            onChange={handleInputChange}
-            placeholder='unit number'
-            className={`unit-input ${showError && inputValue.trim() === '' ? 'error' : ''}`}
-          />
-          <select
-            onChange={(e) => setPriority(e.target.value)}
-            value={priority}
-            className={`unit-select ${showError && !priority ? 'error' : ''}`}
-          >
-            <option value="" disabled>Choose Urgency</option>
-            <option value="low">Dropped Unit</option>
-            <option value="medium">Leaving soon</option>
-            <option value="high">Driver Waiting</option>
-          </select>
-          <button onClick={handleAddingUnitNumber} className='add-button'>
-            Add
-          </button>
-        </div>
-      )}
+  <>
+    <h2 className='customer'>Customer: {selectedCustomer}</h2>
+    
+    <div className='input-section'>
+      <select
+        value={unitType}
+        onChange={(e) => setUnitType(e.target.value)}
+        className={`unit-select ${showError && !unitType ? 'error' : ''}`}
+      >
+        <option value="" disabled>Choose Unit Type</option>
+        <option value="TRK">Truck</option>
+        <option value="TRL">Trailer</option>
+      </select>
+      <input
+        type='text'
+        value={inputValue}
+        onChange={handleInputChange}
+        placeholder='unit number'
+        className={`unit-input ${showError && inputValue.trim() === '' ? 'error' : ''}`}
+      />
+      <select
+        onChange={(e) => setPriority(e.target.value)}
+        value={priority}
+        className={`unit-select ${showError && !priority ? 'error' : ''}`}
+      >
+        <option value="" disabled>Choose Urgency</option>
+        <option value="low">Dropped Unit</option>
+        <option value="medium">Leaving soon</option>
+        <option value="high">Driver Waiting</option>
+      </select>
+      <button onClick={handleAddingUnitNumber} className='add-button'>
+        Add
+      </button>
 
-
-<ul className="unit-list">
-  {customerFleet.map((unit, index) => {
-    if (selectedCustomer === 'All' || unit.customer === selectedCustomer) {
-      return (
-        <li key={index} className={`unit-card priority-${unit.priority}`}>
-          <strong>Unit Number:</strong>{unit.unitType} {unit.UnitNumber}
-          <div className='fleet-button'>
-          <button className='unit-button'
-            onClick={() => {
-              setCurrentUnitIndex(index);
-              setShowPopup(true);
-            }}
-          >
-            Add Specifics
-          </button>
-          <button onClick={() => handleUploadClick(index)} className='unit-button'>Upload Image</button>
-          </div>
-          <ul>
-            {unit.TaskSpecifics.map((details, subIndex) => (
-              <li key={subIndex}>
-                <strong>Position:</strong> {details.position}, <strong>Specifics:</strong> {details.specifics}, <strong>Tread Depth:</strong> {details.treadDepth}/32<br></br>
-                <p className='tireNeeded'><strong>Tire Needed:</strong> {details.neededTire}</p>
+      <ul className="unit-list">
+        {customerFleet.map((unit, index) => {
+          if (selectedCustomer === 'All' || unit.customer === selectedCustomer) {
+            return (
+              <li key={index} className={`unit-card priority-${unit.priority}`}>
+                <strong>Unit Number:</strong> {unit.unitType} {unit.UnitNumber}
+                <div className='fleet-button'>
+                  <button className='unit-button'
+                    onClick={() => {
+                      setCurrentUnitIndex(index);
+                      setShowPopup(true);
+                    }}
+                  >
+                    Add Specifics
+                  </button>
+                  <button onClick={() => handleUploadClick(index)} className='unit-button'>Upload Image</button>
+                </div>
+                <ul>
+                  {unit.TaskSpecifics.map((details, subIndex) => (
+                    <li key={subIndex}>
+                      <strong>Position:</strong> {details.position}, <strong>Specifics:</strong> {details.specifics}, <strong>Tread Depth:</strong> {details.treadDepth}/32<br />
+                      <p className='tireNeeded'><strong>Tire Needed:</strong> {details.neededTire}</p>
+                    </li>
+                  ))}
+                </ul>
+                <UnitImages imageUrls={unit.imageUrls} comments={unit.comments} />
+                <button className='delete-button' onClick={() => handleDeleteUnitNumber(index)}>Delete</button>
               </li>
-            ))}
-          </ul>
-          <UnitImages imageUrls={unit.imageUrls} comments={unit.comments} />
-          <button className='delete-button' onClick={() => handleDeleteUnitNumber(index)}>Delete</button>
-        </li>
-      );
-    }
-    return null;
-  })}
-</ul>
+            );
+          }
+          return null;
+        })}
+      </ul>
 
-
-     {showPopup && (
+      {showPopup && (
         <>
           <div className="overlay" onClick={() => setShowPopup(false)} />
           <div className="specifics-popup">
@@ -467,6 +463,11 @@ const UnitImages = ({ comments }) => {
         </>
       )}
       <button className='submission-button' onClick={submitFleet}>submit</button>
+    </div>
+  </>
+)}
+
+
       {commentInputVisible && (
         <>
           <div className="overlay" onClick={() => setCommentInputVisible(false)} />
