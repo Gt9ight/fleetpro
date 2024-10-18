@@ -123,6 +123,7 @@ function CustomerProgress() {
       createFleetDatabase('fleets', customerFleet);
        setCustomerFleet([]);
        setSelectedCustomer('')
+       setShowUnitInputs(false)
     }
   };
 

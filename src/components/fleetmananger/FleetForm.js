@@ -123,6 +123,7 @@ function Fleetform() {
       createFleetDatabase('fleets', customerFleet);
        setCustomerFleet([]);
        setSelectedCustomer('')
+       setShowUnitInputs(false)
     }
   };
 
