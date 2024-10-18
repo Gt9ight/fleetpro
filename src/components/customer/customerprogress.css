@@ -196,6 +196,17 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
+.start-button{
+  display: block;
+  margin: 15px auto;
+  padding: 10px 20px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .unit-images {
   display: flex;
   flex-wrap: wrap;
@@ -243,3 +254,19 @@
     margin-bottom: 20px;
   }
 }
+
+.unit-input.error,
+.unit-select.error{
+  border: 2px solid red;
+  animation: shake 0.3s ease;
+  animation-iteration-count: 2;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+

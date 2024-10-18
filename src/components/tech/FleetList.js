@@ -279,7 +279,7 @@ const FleetList = () => {
                   })
                   .map((unit) => (
                     <li key={unit.id} className={`unit-item ${unit.done ? 'done' : ''} ${unit.priority}`}>
-                      <strong>Unit Number:</strong> {unit.UnitNumber} <strong>Priority:</strong> {unit.priority}
+                      <strong>Unit Number:</strong>{unit.unitType} {unit.UnitNumber} <strong>Priority:</strong> {unit.priority}
                       <ul>
                         {unit.TaskSpecifics &&
                           unit.TaskSpecifics.length > 0 &&

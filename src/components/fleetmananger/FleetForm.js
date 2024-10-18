@@ -15,8 +15,9 @@ function Fleetform() {
   const [selectedCustomer, setSelectedCustomer] = useState('');
   const [customers, setCustomers] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const [priority, setPriority] = useState('low')
+  const [priority, setPriority] = useState('')
   const [customerFleet, setCustomerFleet] = useState([]);
+  const [unitType, setUnitType] = useState('');
   const [currentUnitIndex, setCurrentUnitIndex] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [showCustomerCategory, setShowCustomerForCategory] = useState(null);
@@ -28,6 +29,30 @@ function Fleetform() {
   const [isLoading, setIsLoading] = useState(false);
   const [comment2, setComment2] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showError, setShowError] = useState(false); 
+  const [showUnitInputs, setShowUnitInputs] = useState(false);
+
+  const generateCustomerName = () => {
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+ // Format as YYYY-MM-DD
+    return `${formattedDate} Freedom`;
+  };
+
+  const handleStart = () => {
+    const customerName = generateCustomerName();
+    setSelectedCustomer(customerName);
+
+    // Optionally, you can add this customer to a customer list or save it somewhere
+    const newCustomer = {
+      name: customerName,
+      fleet: [],
+    };
+
+    // Add to the fleet or customer list
+    setCustomerFleet([...customerFleet, newCustomer]);
+    setShowUnitInputs(true);
+  };
   
 
   const handleNewCustomerChange = (e) => {
@@ -47,11 +72,12 @@ function Fleetform() {
   }
 
   const handleAddingUnitNumber = () => {
-    if (inputValue.trim() !== '') {
+    if (inputValue.trim() !== '' && unitType) {
       const newUnit = {
         UnitNumber: inputValue,
         customer: selectedCustomer,
         TaskSpecifics: [],
+        unitType,
         priority,
         comments: [], 
         imageUrls: [] 
@@ -61,6 +87,12 @@ function Fleetform() {
         return priorityOrder[a.priority] - priorityOrder[b.priority];
       }));
       setInputValue('');
+      setUnitType('');
+      setPriority('')
+      setShowError(false);
+    } else {
+      setShowError(true);
+      
     }
   };
 
@@ -348,32 +380,47 @@ const UnitImages = ({ comments }) => {
       <h1 className='title'>FleetPro</h1>
 
       <div className='customer-creation'>
-        <input
-        type='text'
-        value={newCustomer}
-        onChange={handleNewCustomerChange}
-        placeholder='Enter Customer Name'
-        />
-        <button onClick={handleCreateNewCustomer}>Start</button>
+      {!showUnitInputs && (
+        <button onClick={handleStart} className='start-button'>Start</button>
+      )}
       </div>
 
 
       <h2 className='customer'>Customer: {selectedCustomer}</h2>
-      <div className='input-section'>
-        <input
-        type='text'
-        value={inputValue}
-        onChange={handleInputChange}
-        placeholder='unit number'
-        className='unit-input'
-        />
-        <select onChange={(e) => setPriority(e.target.value)} value={priority}>
-          <option value="low">Low Priority</option>
-          <option value="medium">Medium Priority</option>
-          <option value="high">High Priority</option>
-        </select>
-        <button onClick={handleAddingUnitNumber} className='add-button'>Add</button>
-      </div>
+      
+      {showUnitInputs && (
+        <div className='input-section'>
+          <select
+            value={unitType}
+            onChange={(e) => setUnitType(e.target.value)}
+            className={`unit-select ${showError && !unitType ? 'error' : ''}`}
+          >
+            <option value="" disabled>Choose Unit Type</option>
+            <option value="TRK">Truck</option>
+            <option value="TRL">Trailer</option>
+          </select>
+          <input
+            type='text'
+            value={inputValue}
+            onChange={handleInputChange}
+            placeholder='unit number'
+            className={`unit-input ${showError && inputValue.trim() === '' ? 'error' : ''}`}
+          />
+          <select
+            onChange={(e) => setPriority(e.target.value)}
+            value={priority}
+            className={`unit-select ${showError && !priority ? 'error' : ''}`}
+          >
+            <option value="" disabled>Choose Urgency</option>
+            <option value="low">Dropped Unit</option>
+            <option value="medium">Leaving soon</option>
+            <option value="high">Driver Waiting</option>
+          </select>
+          <button onClick={handleAddingUnitNumber} className='add-button'>
+            Add
+          </button>
+        </div>
+      )}
 
 
 <ul className="unit-list">
@@ -381,7 +428,7 @@ const UnitImages = ({ comments }) => {
     if (selectedCustomer === 'All' || unit.customer === selectedCustomer) {
       return (
         <li key={index} className={`unit-card priority-${unit.priority}`}>
-          <strong>Unit Number:</strong>{unit.UnitNumber}
+          <strong>Unit Number:</strong>{unit.unitType} {unit.UnitNumber}
           <div className='fleet-button'>
           <button className='unit-button'
             onClick={() => {
@@ -482,7 +529,7 @@ const UnitImages = ({ comments }) => {
 
 <div className="category-cards">
 
-    <h1>See how you're other fleets are doing!</h1>
+    <h1>See how you're fleets are doing!</h1>
 {Object.keys(ByCustomer).map((Fleetcustomer) => (
   <div key={Fleetcustomer} className="category-card">
     <div
@@ -506,7 +553,7 @@ const UnitImages = ({ comments }) => {
         return priorityOrder[unitA.priority] - priorityOrder[unitB.priority];
         }).map((unit) => (
           <li key={unit.id} className={`unit-card priority-${unit.priority} ${unit.done ? 'done' : ''}`}>                   
-            <strong>Unit Number:</strong> {unit.UnitNumber} <strong>Priority:</strong>{unit.priority}
+            <strong>Unit Number:</strong> {unit.unitType} {unit.UnitNumber} <strong>Priority:</strong>{unit.priority}
             <ul>
               {unit.TaskSpecifics &&
                 unit.TaskSpecifics.length > 0 &&
