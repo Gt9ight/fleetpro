@@ -19,20 +19,21 @@
 }
 
 .specificPosition:hover {
-  background-color: rgba(0, 0, 0, 0.2); /* Add a hover effect */
+  background-color: rgba(0, 0, 0, 0.2); 
 }
 
 .selected {
-  color: rgb(81, 214, 81); /* Change text color to green for selected items */
+  color: rgb(81, 214, 81); 
 }
 
 .unit-container{
   border: solid 1px;
-  width: 30%;
-  height: 80vh;
+  width: 90%; /* Widen the container */
+  height:50vh; 
   display: flex;
   align-items: end;
   justify-content: space-between;
+  position: relative;
 }
 
 .frontOfUnit{
@@ -40,7 +41,7 @@
   border-bottom: none;
   width: 150px;
   text-align: center;
-  padding: 40px;
+  padding: 20px;
   margin: 0%;
   background-color: rgb(180, 176, 176);
 }
@@ -57,6 +58,23 @@
   display: flex;
 }
 
+input{
+  text-align: center;
+}
+
+.leftSteer {
+  position: absolute;
+  top: 0; 
+  left: 0; 
+}
+
+.rightSteer {
+  position: absolute;
+  top: 0; 
+  right: 0; 
+}
+
+
 .leftFrontTandem, .rightFrontTandem{
   margin-bottom: 20px;
 }
@@ -69,6 +87,7 @@
   margin-top: 5px;
   width: 100px;
   border-radius: 4px;
+
 }
 
 
@@ -83,7 +102,7 @@
 
   .unit-container {
     width: 90%; /* Widen the container */
-    height:70vh; /* Allow container to grow with content */
+    height:50vh; /* Allow container to grow with content */
     justify-content: space-between;
     display: flex;
     align-items: end;

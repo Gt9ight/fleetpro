@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './fleetspecifics.css';
 import PositionSelect from './PositionSelect';
+import TruckPositionSelect from './TruckPositionSelect';
 
-const FleetSpecifics = ({ onClose, onSave }) => {
+const FleetSpecifics = ({ onClose, onSave, unitType }) => {
   const [position, setPosition] = useState('');
   const [specifics, setSpecifics] = useState('');
   const [treadDepth, setTreadDepth] = useState('');
@@ -35,7 +36,7 @@ const FleetSpecifics = ({ onClose, onSave }) => {
 
   
   const formatSelectedPositions = (selectedPositions) => {
-    let formattedPositions = [...selectedPositions]; 
+    let formattedPositions = [...selectedPositions];
 
     const allPositions = ['LFO', 'LFI', 'LRO', 'LRI', 'RFO', 'RFI', 'RRO', 'RRI'];
     const isAllSelected = allPositions.every(pos => selectedPositions.includes(pos));
@@ -43,46 +44,55 @@ const FleetSpecifics = ({ onClose, onSave }) => {
     if (isAllSelected) {
       return 'All 8'; 
     }
-
-    const allRearPositions = [ 'LRO', 'LRI', 'RRO', 'RRI'];
-    const isAllRearSelected = allRearPositions.every(pos => selectedPositions.includes(pos));
   
-    if (isAllRearSelected) {
-      return 'Rear Axle'; 
-    }
-
-    const allFrontPositions = [ 'LFO', 'LFI', 'RFO', 'RFI'];
-    const isAllFrontSelected = allFrontPositions.every(pos => selectedPositions.includes(pos));
+    const frontAxlePositions = ['LFI', 'LFO', 'RFI', 'RFO'];
+    const hasFrontAxle = frontAxlePositions.every(pos => selectedPositions.includes(pos));
   
-    if (isAllFrontSelected) {
-      return 'Front Axle'; 
+    const rearAxlePositions = ['LRI', 'LRO', 'RRI', 'RRO'];
+    const hasRearAxle = rearAxlePositions.every(pos => selectedPositions.includes(pos));
+  
+    if (hasFrontAxle) {
+      formattedPositions = formattedPositions.filter(pos => !frontAxlePositions.includes(pos));
+      formattedPositions.push('Front Axle');
     }
-
-    // Handle left side (LFO/LFI)
-    if (selectedPositions.includes('LFO') && selectedPositions.includes('LFI')) {
-      formattedPositions = formattedPositions.filter(pos => pos !== 'LFO' && pos !== 'LFI'); 
-      formattedPositions.push('LFI/O'); 
+  
+    if (hasRearAxle) {
+      formattedPositions = formattedPositions.filter(pos => !rearAxlePositions.includes(pos));
+      formattedPositions.push('Rear Axle');
     }
-
-    // Handle right side (RFO/RFI)
-    if (selectedPositions.includes('RFO') && selectedPositions.includes('RFI')) {
-      formattedPositions = formattedPositions.filter(pos => pos !== 'RFO' && pos !== 'RFI'); 
-      formattedPositions.push('RFI/O'); 
+  
+    if (!hasFrontAxle) {
+      if (selectedPositions.includes('LFO') && selectedPositions.includes('LFI')) {
+        formattedPositions = formattedPositions.filter(pos => pos !== 'LFO' && pos !== 'LFI');
+        formattedPositions.push('LFI/O');
+      }
+  
+      if (selectedPositions.includes('RFO') && selectedPositions.includes('RFI')) {
+        formattedPositions = formattedPositions.filter(pos => pos !== 'RFO' && pos !== 'RFI');
+        formattedPositions.push('RFI/O');
+      }
     }
-
-    if (selectedPositions.includes('RRO') && selectedPositions.includes('RRI')) {
-      formattedPositions = formattedPositions.filter(pos => pos !== 'RRO' && pos !== 'RRI');
-      formattedPositions.push('RRI/O'); 
+  
+    if (!hasRearAxle) {
+      if (selectedPositions.includes('RRO') && selectedPositions.includes('RRI')) {
+        formattedPositions = formattedPositions.filter(pos => pos !== 'RRO' && pos !== 'RRI');
+        formattedPositions.push('RRI/O');
+      }
+  
+      if (selectedPositions.includes('LRO') && selectedPositions.includes('LRI')) {
+        formattedPositions = formattedPositions.filter(pos => pos !== 'LRO' && pos !== 'LRI');
+        formattedPositions.push('LRI/O');
+      }
     }
-
-    if (selectedPositions.includes('LRO') && selectedPositions.includes('LRI')) {
-      formattedPositions = formattedPositions.filter(pos => pos !== 'LRO' && pos !== 'LRI');
-      formattedPositions.push('LRI/O'); 
-    }
-
-
-    return formattedPositions.join(', '); 
+  
+    return formattedPositions.join(', ');
   };
+  
+  
+  
+  
+  
+  
 
   const handleSelectPositions = (selectedPositions) => {
     
@@ -93,13 +103,25 @@ const FleetSpecifics = ({ onClose, onSave }) => {
   return (
     <div className='fleet-popup'>
       <button className='positionselction' onClick={togglePositionSelect}>
-        Position Chooser
+        Select Position(s)
       </button>
       {isPositionSelectOpen && (
-        <div className='popup'>
-          <PositionSelect onClose={togglePositionSelect} onSelectPositions={handleSelectPositions} />
-        </div>
+  <div className="popup-overlay" onClick={togglePositionSelect}>
+    <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+      {unitType === 'TRK' ? (
+        <TruckPositionSelect 
+          onSelectPositions={handleSelectPositions}
+          onClose={togglePositionSelect} 
+        />
+      ) : (
+        <PositionSelect 
+          onSelectPositions={handleSelectPositions}
+          onClose={togglePositionSelect} 
+        />        
       )}
+    </div>
+  </div>
+)}
 
       <label><strong>Selected Positions:</strong></label>
       <div className='selected-positions'>

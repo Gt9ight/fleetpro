@@ -6,6 +6,7 @@ import Customerprogress from "./components/customer/CustomerProgress";
 import FleetList from "./components/tech/FleetList";
 
 
+
 function App() {
   // const { currentUser } = useContext(AuthContext);
 
@@ -19,6 +20,7 @@ function App() {
 
   return (
     <div >
+ 
       <BrowserRouter basename="/fleetpro">
         <Routes>
           <Route path="/">
@@ -28,7 +30,7 @@ function App() {
             <Route path="fleetlist" element={<FleetList/>}/>
           </Route>
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter> 
  
     </div>
   );

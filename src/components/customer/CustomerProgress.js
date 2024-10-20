@@ -388,7 +388,7 @@ const UnitImages = ({ comments }) => {
 
       {showUnitInputs && (
   <>
-    <h2 className='customer'>Customer: {selectedCustomer}</h2>
+    <h2 className='customer'>Fleet: {selectedCustomer}</h2>
     
     <div className='input-section'>
       <select
@@ -459,7 +459,7 @@ const UnitImages = ({ comments }) => {
         <>
           <div className="overlay" onClick={() => setShowPopup(false)} />
           <div className="specifics-popup">
-            <FleetSpecifics onClose={() => setShowPopup(false)} onSave={handleAddUnitInfo} />
+            <FleetSpecifics onClose={() => setShowPopup(false)} onSave={handleAddUnitInfo} unitType={customerFleet[currentUnitIndex]?.unitType}/>
           </div>
         </>
       )}
@@ -580,5 +580,4 @@ const UnitImages = ({ comments }) => {
     </div>
   )
 }
-
 export default CustomerProgress

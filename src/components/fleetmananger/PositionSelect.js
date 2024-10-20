@@ -44,7 +44,9 @@ function PositionSelect({ onClose, onSelectPositions }) {
           </div>
         </div>
       </div>
-      <button className='doneButton' onClick={handleDoneClick}>Done</button>
+      <div class="button-container">
+          <button className='doneButton' onClick={handleDoneClick}>Done</button>
+      </div>
     </div>
   );
 }

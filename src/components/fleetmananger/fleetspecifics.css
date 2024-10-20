@@ -123,3 +123,119 @@
   .doneButton:hover {
     background-color: #45a049;
   }
+
+  /* Popup overlay for dimming background */
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure the popup is above other content */
+  }
+
+/* Popup content styling */
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%; /* Make the popup responsive */
+  max-width: 500px; /* Set a max width for larger screens */
+  max-height: 600px; /* Restrict the height */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Allow scrolling if content overflows */
+  z-index: 1001; /* Ensure the content is above the overlay */
+}
+
+/* Reuse existing fleet-popup styles */
+.fleet-popup {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.fleet-popup label {
+  margin-bottom: 5px;
+}
+
+.fleet-popup input,
+.fleet-popup select {
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+.fleet-popup button {
+  padding: 10px 15px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  justify-content: center;
+  align-items: center;
+}
+
+.fleet-popup button:hover {
+  background-color: #0056b3;
+}
+
+/* Specific styling for position selection buttons */
+.specificPosition {
+  background-image: url('tireselect.png');
+  background-size: 120px 120px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  height: 50px;
+  width: 50px;
+  margin: 5px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+}
+
+.specificPosition:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.selected {
+  color: rgb(81, 214, 81);
+}
+
+.selected-positions {
+  margin-bottom: 10px;
+  text-decoration-style: wavy;
+}
+
+/* Done button styles */
+.doneButton {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+.doneButton:hover {
+  background-color: #45a049;
+}
