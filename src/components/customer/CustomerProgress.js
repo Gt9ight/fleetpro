@@ -44,14 +44,8 @@ function CustomerProgress() {
     const customerName = generateCustomerName();
     setSelectedCustomer(customerName);
 
-    // Optionally, you can add this customer to a customer list or save it somewhere
-    const newCustomer = {
-      name: customerName,
-      fleet: [],
-    };
 
-    // Add to the fleet or customer list
-    setCustomerFleet([...customerFleet, newCustomer]);
+    setCustomerFleet([...customerFleet]);
     setShowUnitInputs(true);
   };
   
