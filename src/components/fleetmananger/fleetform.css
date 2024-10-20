@@ -252,6 +252,10 @@ select{
   left: 10px;
 }
 
+.imagesteps{
+  color: red;
+}
+
 .next-button {
   right: 10px;
 }

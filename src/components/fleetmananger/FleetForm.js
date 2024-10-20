@@ -31,6 +31,8 @@ function Fleetform() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showError, setShowError] = useState(false); 
   const [showUnitInputs, setShowUnitInputs] = useState(false);
+  const [showSwipeableCards, setShowSwipeableCards] = useState(false);
+  const [showWarning, setShowWarning] = useState(false)
 
   const generateCustomerName = () => {
     const currentDate = new Date();
@@ -90,6 +92,7 @@ function Fleetform() {
       setUnitType('');
       setPriority('')
       setShowError(false);
+      setShowWarning(true)
     } else {
       setShowError(true);
       
@@ -143,6 +146,8 @@ function Fleetform() {
 
     fetchData();
   }, []);
+
+
 
   const handleUploadClick = (unitIndex) => {
     setCurrentUnitIndex(unitIndex);
@@ -324,7 +329,7 @@ function Fleetform() {
     setImagePopupVisible(false);
     setSelectedImageUrl([]);
   };
-;
+
 
 const UnitImages = ({ comments }) => {
   if (!comments || comments.length === 0) return null;
@@ -421,7 +426,14 @@ const UnitImages = ({ comments }) => {
         Add
       </button>
 
+
+
       <ul className="unit-list">
+
+      {showWarning && (
+    <h4 className='imagesteps'>Upload Images From Photo Library</h4>
+  )}
+      
         {customerFleet.map((unit, index) => {
           if (selectedCustomer === 'All' || unit.customer === selectedCustomer) {
             return (

@@ -6,6 +6,9 @@ body {
   padding: 0;
 }
 
+.imagesteps{
+  text-align: center;
+}
 .centered-container {
   display: flex;
   flex-direction: column;

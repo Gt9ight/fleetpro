@@ -31,6 +31,7 @@ function CustomerProgress() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showError, setShowError] = useState(false); 
   const [showUnitInputs, setShowUnitInputs] = useState(false);
+  const [showWarning, setShowWarning] = useState(false)
 
   const generateCustomerName = () => {
     const currentDate = new Date();
@@ -90,6 +91,7 @@ function CustomerProgress() {
       setUnitType('');
       setPriority('')
       setShowError(false);
+      setShowWarning(true)
     } else {
       setShowError(true);
       
@@ -422,6 +424,9 @@ const UnitImages = ({ comments }) => {
       </button>
 
       <ul className="unit-list">
+      {showWarning && (
+    <h4 className='imagesteps'>Upload Images From Photo Library</h4>
+  )}
         {customerFleet.map((unit, index) => {
           if (selectedCustomer === 'All' || unit.customer === selectedCustomer) {
             return (

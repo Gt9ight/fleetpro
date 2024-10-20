@@ -254,6 +254,7 @@ const FleetList = () => {
         {/* <button className='logout'>Log Out</button> */}
       </div>
       <h2 className='fleetList-title'>Fleets</h2>
+      <h4  className='imagesteps'>Upload Images From Photo Library</h4>
       <div className="category-cards">
         {Object.keys(ByCustomer).map((Fleetcustomer) => (
           <div key={Fleetcustomer} className="category-card">
