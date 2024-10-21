@@ -21,7 +21,7 @@ function TruckPositionSelect({ onClose, onSelectPositions }) {
   
     return (
       <div className='unitDiagram'>
-        <h3 className='frontOfUnit'>Nose of Unit</h3>
+        <h3 className='frontOfUnit'>Front of Truck</h3>
         <div className='unit-container'>        
           <div className='leftSideTires'>
             <div className='leftSteer'>
